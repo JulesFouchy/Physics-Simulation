@@ -65,7 +65,7 @@ void ParticleSystem::render() {
     m_renderingShader.setUniform1f("_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
     m_renderingShader.setUniform1f("_particle_size", _particle_size);
     m_renderingShader.setUniform1i("_bPingPong", _bPingPong);
-    GLCall(glBindVertexArray(m_vaoID));
+    m_renderingShader.setUniform1i("_nb_particles", _nbParticles);
     GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, _nbParticles));
 }
 
