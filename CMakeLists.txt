@@ -16,6 +16,7 @@ set(COOL_MODULES
     Serialization
     Random
     Time
+    String
 )
 
 # Set the path where all the Cool modules are stored. It is required by all the Cool IncludeMe.cmake files

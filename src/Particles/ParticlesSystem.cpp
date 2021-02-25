@@ -3,17 +3,31 @@
 #include <Cool/Random/Random.h>
 #include <Cool/App/RenderState.h>
 #include <Cool/Time/Time.h>
+#include <Cool/String/String.h>
 
 ParticleSystem::ParticleSystem(int nbParticles)
     : m_renderingShader("shaders/particle.vert", "shaders/particle.frag"),
-      m_posSSBO(0),
-      m_velSSBO(1),
-      m_colorSSBO(2),
-      m_physicsShader("shaders/physics.comp"),
+      m_pos1SSBO(1),
+      m_pos2SSBO(2),
+      m_velSSBO(3),
+      m_colorSSBO(0),
       m_colorGradientComputeShader("shaders/colorGradient.comp"),
       m_hueGradientComputeShader("shaders/hueGradient.comp")
 {
     setNbParticles(nbParticles);
+    // Compile compute shaders
+    std::string physicsShaderSrc;
+    File::ToString("shaders/physics.comp", &physicsShaderSrc);
+    std::string physicsShaderSrc12 = physicsShaderSrc;
+    String::ReplaceAll(physicsShaderSrc12, "__bindingIN__",  "1");
+    String::ReplaceAll(physicsShaderSrc12, "__bindingOUT__", "2");
+    std::string physicsShaderSrc21 = physicsShaderSrc;
+    String::ReplaceAll(physicsShaderSrc21, "__bindingIN__",  "2");
+    String::ReplaceAll(physicsShaderSrc21, "__bindingOUT__", "1");
+    Log::Info(physicsShaderSrc12);
+    Log::Warn(physicsShaderSrc21);
+    m_physicsShaderFrom1to2.createProgramFromCode(physicsShaderSrc12);
+    m_physicsShaderFrom2to1.createProgramFromCode(physicsShaderSrc21);
     // Vertex array
     GLCall(glGenVertexArrays(1, &m_vaoID));
     GLCall(glBindVertexArray(m_vaoID));
@@ -48,16 +62,18 @@ void ParticleSystem::render() {
     m_renderingShader.bind();
     m_renderingShader.setUniform1f("_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
     m_renderingShader.setUniform1f("_particle_size", _particle_size);
+    m_renderingShader.setUniform1i("_bPingPong", _bPingPong);
     GLCall(glBindVertexArray(m_vaoID));
     GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, _nbParticles));
 }
 
 void ParticleSystem::update() {
-    m_physicsShader.get().bind();
-    m_physicsShader.get().setUniform1f("_dt", Time::deltaTime());
-    m_physicsShader.get().setUniform1f("_stiffness", _stiffness);
-    m_physicsShader.get().setUniform1f("_air_damping", _air_damping);
-    m_physicsShader.compute(_nbParticles);
+    physicsShader().get().bind();
+    physicsShader().get().setUniform1f("_dt", Time::deltaTime());
+    physicsShader().get().setUniform1f("_stiffness", _stiffness);
+    physicsShader().get().setUniform1f("_air_damping", _air_damping);
+    physicsShader().compute(_nbParticles);
+    _bPingPong = !_bPingPong;
 }
 
 void ParticleSystem::ImGui() {
@@ -82,7 +98,9 @@ void ParticleSystem::setNbParticles(int N) {
         v[2 * i] = (static_cast<float>(i) / static_cast<float>(N)) * 2.f - 1.f;
         v[2 * i + 1] = i  == N / 2 ? 1.f : 0.f;
     }
-    m_posSSBO.uploadData  (v);
+    _bPingPong = true;
+    m_pos1SSBO.uploadData(v);
+    m_pos2SSBO.uploadData(v);
     m_velSSBO.uploadData  (_nbParticles * 2, nullptr);
     m_colorSSBO.uploadData(_nbParticles * 3, nullptr);
     // Update uniform

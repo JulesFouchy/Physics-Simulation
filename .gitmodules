@@ -25,3 +25,6 @@
 [submodule "Cool/Time"]
 	path = Cool/Time
 	url = https://github.com/CoolLibs/Time
+[submodule "Cool/String"]
+	path = Cool/String
+	url = https://github.com/CoolLibs/String

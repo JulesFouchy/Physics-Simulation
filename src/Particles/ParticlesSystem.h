@@ -15,16 +15,22 @@ public:
 	void setNbParticles(int N);
 
 private:
+	inline ComputeShader<256>& physicsShader() { return _bPingPong ? m_physicsShaderFrom1to2 : m_physicsShaderFrom2to1; }
+
+private:
 	int _nbParticles;
 	float _particle_size = 0.02f;
 	float _stiffness = 5.f;
 	float _air_damping = 10.f;
 
 	Shader m_renderingShader;
-	SSBO<float> m_posSSBO;
+	bool _bPingPong = true;
+	SSBO<float> m_pos1SSBO;
+	SSBO<float> m_pos2SSBO;
 	SSBO<float> m_velSSBO;
 	SSBO<float> m_colorSSBO;
-	ComputeShader<256> m_physicsShader;
+	ComputeShader<256> m_physicsShaderFrom1to2;
+	ComputeShader<256> m_physicsShaderFrom2to1;
 	ComputeShader<256> m_colorGradientComputeShader;
 	ComputeShader<256> m_hueGradientComputeShader;
 	GLuint m_vaoID;
