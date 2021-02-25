@@ -24,8 +24,6 @@ ParticleSystem::ParticleSystem(int nbParticles)
     std::string physicsShaderSrc21 = physicsShaderSrc;
     String::ReplaceAll(physicsShaderSrc21, "__bindingIN__",  "2");
     String::ReplaceAll(physicsShaderSrc21, "__bindingOUT__", "1");
-    Log::Info(physicsShaderSrc12);
-    Log::Warn(physicsShaderSrc21);
     m_physicsShaderFrom1to2.createProgramFromCode(physicsShaderSrc12);
     m_physicsShaderFrom2to1.createProgramFromCode(physicsShaderSrc21);
     // Vertex array
@@ -82,7 +80,7 @@ void ParticleSystem::ImGui() {
         setNbParticles(N);
     }
     ImGui::SliderFloat("Size", &_particle_size, 0.f, 0.1f);
-    ImGui::SliderFloat("Stiffness", &_stiffness, 0.f, 10.f);
+    ImGui::SliderFloat("Stiffness", &_stiffness, 0.f, 500.f);
     ImGui::SliderFloat("Damping", &_air_damping, 0.f, 10.f);
     if (ImGui::Button("Reset")) {
         setNbParticles(_nbParticles);

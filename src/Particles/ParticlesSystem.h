@@ -40,12 +40,24 @@ private:
 	//Serialization
 	friend class cereal::access;
 	template<class Archive>
-	void serialize(Archive& archive)
+	void save(Archive& archive) const
 	{
 		archive(
+			cereal::make_nvp("Number of Particles", _nbParticles),
 			cereal::make_nvp("Particle Size", _particle_size),
 			cereal::make_nvp("Stiffness", _stiffness),
 			cereal::make_nvp("Air Damping", _air_damping)
 		);
+	}
+	template<class Archive>
+	void load(Archive& archive)
+	{
+		archive(
+			cereal::make_nvp("Number of Particles", _nbParticles),
+			cereal::make_nvp("Particle Size", _particle_size),
+			cereal::make_nvp("Stiffness", _stiffness),
+			cereal::make_nvp("Air Damping", _air_damping)
+		);
+		setNbParticles(_nbParticles);
 	}
 };
