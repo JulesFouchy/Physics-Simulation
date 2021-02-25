@@ -15,8 +15,10 @@ public:
 	void setNbParticles(int N);
 
 private:
-	int m_nbParticles;
-	float m_particle_size = 0.02f;
+	int _nbParticles;
+	float _particle_size = 0.02f;
+	float _stiffness = 5.f;
+	float _air_damping = 10.f;
 
 	Shader m_renderingShader;
 	SSBO<float> m_posSSBO;
@@ -35,7 +37,9 @@ private:
 	void serialize(Archive& archive)
 	{
 		archive(
-			cereal::make_nvp("Particle Size", m_particle_size)
+			cereal::make_nvp("Particle Size", _particle_size),
+			cereal::make_nvp("Stiffness", _stiffness),
+			cereal::make_nvp("Air Damping", _air_damping)
 		);
 	}
 };

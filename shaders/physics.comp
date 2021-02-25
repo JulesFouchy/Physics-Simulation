@@ -4,7 +4,9 @@
 //? uniform int NumberOfComputationsY;
 //? uniform int NumberOfComputationsZ;
 
-uniform float dt;
+uniform float _dt;
+uniform float _air_damping;
+uniform float _stiffness;
 
 layout(std430, binding=0) buffer particlePositions {
    vec2 partPos[];
@@ -16,9 +18,11 @@ layout(std430, binding=1) buffer particleVelocities {
 
 void cool_main(){
     uint gid = gl_GlobalInvocationID.x;
-    // vec2 dir = restPos[gid] - part[gid].pos;
-    vec2 acc = vec2(0.1, 0.);
-    // apply
-    partVel[gid] += acc * dt;
-    partPos[gid] += partVel[gid] * dt;
+    if (gid > 0 && gid < NumberOfComputationsX - 1) {
+        vec2 dir = partPos[gid] - partPos[(gid + 1)%NumberOfComputationsX];
+        vec2 acc = - dir * _stiffness - partVel[gid] * _air_damping;
+        // apply
+        partVel[gid] += acc * _dt;
+        partPos[gid] += partVel[gid] * _dt;
+    }
 }
