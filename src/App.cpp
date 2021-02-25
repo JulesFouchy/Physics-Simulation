@@ -4,6 +4,7 @@
 #include <Cool/App/Input.h>
 #include <Cool/Serialization/JsonFile.h>
 #include <Cool/File/File.h>
+#include <Cool/Time/Time.h>
 
 App::App(OpenGLWindow& mainWindow)
 	: m_mainWindow(mainWindow), m_particle_system(10)
@@ -21,6 +22,8 @@ App::~App() {
 
 void App::update() {
 	render();
+	Time::Update();
+	m_particle_system.update();
 }
 
 void App::render() {

@@ -2,6 +2,7 @@
 
 #include <Cool/Random/Random.h>
 #include <Cool/App/RenderState.h>
+#include <Cool/Time/Time.h>
 
 ParticleSystem::ParticleSystem(int nbParticles)
     : m_renderingShader("shaders/particle.vert", "shaders/particle.frag"),
@@ -52,6 +53,8 @@ void ParticleSystem::render() {
 }
 
 void ParticleSystem::update() {
+    m_physicsShader.get().bind();
+    m_physicsShader.get().setUniform1f("dt", Time::deltaTime());
     m_physicsShader.compute(m_nbParticles);
 }
 
