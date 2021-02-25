@@ -33,7 +33,7 @@ void cool_main(){
             vec2 dirL = partPosIN[gid] - partPosIN[gid - 1];
             vec2 dirR = partPosIN[gid] - partPosIN[gid + 1];
             vec2 acc = 
-                - (dirL + dirR) * _stiffness  // Spring attraction
+                - (dirL + dirR) * _stiffness * NumberOfComputationsX  // Spring attraction
                 - partVel[gid] * _air_damping // Air friction
                 + vec2(0., -_gravity)         // Gravity
             ;

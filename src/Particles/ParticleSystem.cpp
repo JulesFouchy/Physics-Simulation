@@ -82,11 +82,11 @@ void ParticleSystem::update() {
 
 void ParticleSystem::ImGui() {
     int N = _nbParticles;
-    if (ImGui::SliderInt("Number of Particles", &N, 1, 1000)) {
+    if (ImGui::SliderInt("Number of Particles", &N, 1, 75)) {
         setNbParticles(N);
     }
     ImGui::SliderFloat("Size", &_particle_size, 0.f, 0.1f);
-    ImGui::SliderFloat("Stiffness", &_stiffness, 0.f, 500.f);
+    ImGui::SliderFloat("Stiffness", &_stiffness, 0.f, 100.f);
     ImGui::SliderFloat("Damping", &_air_damping, 0.f, 10.f);
     ImGui::SliderFloat("Gravity", &_gravity, 0.f, 10.f);
     if (ImGui::Button("Reset")) {
