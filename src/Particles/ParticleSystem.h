@@ -31,6 +31,7 @@ private:
 	SSBO<float> m_colorSSBO;
 	ComputeShader<256> m_physicsShaderFrom1to2;
 	ComputeShader<256> m_physicsShaderFrom2to1;
+	ComputeShader<256> _reset_velocities_shader;
 	ComputeShader<256> m_colorGradientComputeShader;
 	ComputeShader<256> m_hueGradientComputeShader;
 	GLuint m_vaoID;

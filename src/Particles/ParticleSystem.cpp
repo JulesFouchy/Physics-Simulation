@@ -11,6 +11,7 @@ ParticleSystem::ParticleSystem(int nbParticles)
       m_pos2SSBO(2),
       m_velSSBO(3),
       m_colorSSBO(0),
+      _reset_velocities_shader("shaders/reset_particle_velocities.comp"),
       m_colorGradientComputeShader("shaders/colorGradient.comp"),
       m_hueGradientComputeShader("shaders/hueGradient.comp")
 {
@@ -100,6 +101,7 @@ void ParticleSystem::setNbParticles(int N) {
     m_pos1SSBO.uploadData(v);
     m_pos2SSBO.uploadData(v);
     m_velSSBO.uploadData  (_nbParticles * 2, nullptr);
+    _reset_velocities_shader.compute(_nbParticles);
     m_colorSSBO.uploadData(_nbParticles * 3, nullptr);
     // Update uniform
     // m_physicsShader.get().bind();
