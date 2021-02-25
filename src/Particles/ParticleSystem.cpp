@@ -4,6 +4,7 @@
 #include <Cool/App/RenderState.h>
 #include <Cool/Time/Time.h>
 #include <Cool/String/String.h>
+#include <Cool/App/Input.h>
 
 ParticleSystem::ParticleSystem(int nbParticles)
     : m_renderingShader("shaders/particle.vert", "shaders/particle.frag"),
@@ -11,7 +12,9 @@ ParticleSystem::ParticleSystem(int nbParticles)
       m_pos2SSBO(2),
       m_velSSBO(3),
       m_colorSSBO(0),
+      _held_particle_SSBO(4),
       _reset_velocities_shader("shaders/reset_particle_velocities.comp"),
+      _check_held_particle_shader("shaders/check_held_particle.comp"),
       m_colorGradientComputeShader("shaders/colorGradient.comp"),
       m_hueGradientComputeShader("shaders/hueGradient.comp")
 {
@@ -71,6 +74,7 @@ void ParticleSystem::update() {
     physicsShader().get().setUniform1f("_dt", Time::deltaTime());
     physicsShader().get().setUniform1f("_stiffness", _stiffness);
     physicsShader().get().setUniform1f("_air_damping", _air_damping);
+    physicsShader().get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
     physicsShader().compute(_nbParticles);
     _bPingPong = !_bPingPong;
 }
@@ -88,9 +92,25 @@ void ParticleSystem::ImGui() {
     }
 }
 
+void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        _check_held_particle_shader.get().bind();
+        _check_held_particle_shader.get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
+        _check_held_particle_shader.get().setUniform1f("_particle_radius", _particle_size);
+        _check_held_particle_shader.compute(_nbParticles);
+    }
+    else if (action == GLFW_RELEASE) {
+        unsigned int __idx = -1;
+        _held_particle_SSBO.uploadData(1, &__idx);
+    }
+}
+
 void ParticleSystem::setNbParticles(int N) {
     // Set
     _nbParticles = N;
+    // Held particle SSBO
+    unsigned int __idx = -1;
+    _held_particle_SSBO.uploadData(1, &__idx);
     // Resize SSBOs
     std::vector<float> v(N * 2);
     for (int i = 0; i < N; ++i) {

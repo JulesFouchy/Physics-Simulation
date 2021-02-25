@@ -82,7 +82,7 @@ void App::onKeyboardEvent(int key, int scancode, int action, int mods) {
 
 void App::onMouseButtonEvent(int button, int action, int mods) {
 	if (!RenderState::IsExporting() && !ImGui::GetIO().WantCaptureMouse) {
-
+		m_particle_system.onMouseButtonEvent(button, action, mods);
 	}
 }
 

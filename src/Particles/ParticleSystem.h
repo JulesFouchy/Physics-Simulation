@@ -11,10 +11,11 @@ public:
 	void render();
 	void update();
 	void ImGui();
-
-	void setNbParticles(int N);
+	
+	void onMouseButtonEvent(int button, int action, int mods);
 
 private:
+	void setNbParticles(int N);
 	inline ComputeShader<256>& physicsShader() { return _bPingPong ? m_physicsShaderFrom1to2 : m_physicsShaderFrom2to1; }
 
 private:
@@ -29,9 +30,11 @@ private:
 	SSBO<float> m_pos2SSBO;
 	SSBO<float> m_velSSBO;
 	SSBO<float> m_colorSSBO;
+	SSBO<unsigned int> _held_particle_SSBO;
 	ComputeShader<256> m_physicsShaderFrom1to2;
 	ComputeShader<256> m_physicsShaderFrom2to1;
 	ComputeShader<256> _reset_velocities_shader;
+	ComputeShader<256> _check_held_particle_shader;
 	ComputeShader<256> m_colorGradientComputeShader;
 	ComputeShader<256> m_hueGradientComputeShader;
 	GLuint m_vaoID;

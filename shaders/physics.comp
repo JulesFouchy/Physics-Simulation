@@ -7,6 +7,7 @@
 uniform float _dt;
 uniform float _air_damping;
 uniform float _stiffness;
+uniform vec2 _mouse_pos;
 
 //? #define __bindingIN__  1
 //? #define __bindingOUT__ 2
@@ -20,15 +21,30 @@ layout(std430, binding=__bindingOUT__) buffer particlePositions__bindingOUT__ {
 layout(std430, binding=3) buffer particleVelocities {
    vec2 partVel[];
 };
+layout(std430, binding=4) buffer heldParticle {
+   unsigned int heldPart[];
+};
 
 void cool_main(){
     uint gid = gl_GlobalInvocationID.x;
-    if (gid > 0 && gid < NumberOfComputationsX - 1) {
-        vec2 dirL = partPosIN[gid] - partPosIN[gid - 1];
-        vec2 dirR = partPosIN[gid] - partPosIN[gid + 1];
-        vec2 acc = - (dirL + dirR) * _stiffness - partVel[gid] * _air_damping;
-        // apply
-        partVel[gid] += acc * _dt;
-        partPosOUT[gid] = partPosIN[gid] + partVel[gid] * _dt;
+    if (gid != heldPart[0]) {
+        if (gid > 0 && gid < NumberOfComputationsX - 1) {
+            vec2 dirL = partPosIN[gid] - partPosIN[gid - 1];
+            vec2 dirR = partPosIN[gid] - partPosIN[gid + 1];
+            vec2 acc = 
+                - (dirL + dirR) * _stiffness  // Spring attraction
+                - partVel[gid] * _air_damping // Air friction
+                + vec2(0., -1.)               // Gravity
+            ;
+            // apply
+            partVel[gid] += acc * _dt;
+            partPosOUT[gid] = partPosIN[gid] + partVel[gid] * _dt;
+        }
+        else {
+            partPosOUT[gid] = partPosIN[gid];
+        }
+    }
+    else {
+        partPosOUT[gid] = _mouse_pos;
     }
 }

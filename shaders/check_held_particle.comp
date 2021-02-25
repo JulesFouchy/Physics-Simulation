@@ -1,0 +1,21 @@
+//? #version 430
+
+//? uniform int NumberOfComputationsX;
+//? uniform int NumberOfComputationsY;
+//? uniform int NumberOfComputationsZ;
+
+uniform vec2 _mouse_pos;
+uniform float _particle_radius;
+
+layout(std430, binding=1) buffer particlePositions1 {
+   vec2 partPos[];
+};
+layout(std430, binding=4) buffer heldParticle {
+   unsigned int heldPart[];
+};
+
+void cool_main(){
+    uint gid = gl_GlobalInvocationID.x;
+    if (distance(_mouse_pos, partPos[gid]) < _particle_radius)
+        heldPart[0] = gid;
+}
