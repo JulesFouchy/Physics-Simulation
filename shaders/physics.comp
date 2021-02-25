@@ -24,8 +24,9 @@ layout(std430, binding=3) buffer particleVelocities {
 void cool_main(){
     uint gid = gl_GlobalInvocationID.x;
     if (gid > 0 && gid < NumberOfComputationsX - 1) {
-        vec2 dir = partPosIN[gid] - partPosIN[(gid + 1)%NumberOfComputationsX];
-        vec2 acc = - dir * _stiffness - partVel[gid] * _air_damping;
+        vec2 dirL = partPosIN[gid] - partPosIN[gid - 1];
+        vec2 dirR = partPosIN[gid] - partPosIN[gid + 1];
+        vec2 acc = - (dirL + dirR) * _stiffness - partVel[gid] * _air_damping;
         // apply
         partVel[gid] += acc * _dt;
         partPosOUT[gid] = partPosIN[gid] + partVel[gid] * _dt;
