@@ -1,4 +1,4 @@
-#include "ParticlesSystem.h"
+#include "ParticleSystem.h"
 
 #include <Cool/Random/Random.h>
 #include <Cool/App/RenderState.h>

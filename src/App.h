@@ -5,7 +5,7 @@
 #include <Cool/Renderer_Fullscreen/Renderer_Fullscreen.h>
 #include <Cool/Serialization/GlmSerialization.h>
 
-#include "Particles/ParticlesSystem.h"
+#include "Particles/ParticleSystem.h"
 
 using namespace Cool;
 
