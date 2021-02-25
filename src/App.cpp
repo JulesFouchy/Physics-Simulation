@@ -6,7 +6,7 @@
 #include <Cool/File/File.h>
 
 App::App(OpenGLWindow& mainWindow)
-	: m_mainWindow(mainWindow), m_shader("Cool/Renderer_Fullscreen/fullscreen.vert", "shaders/demo.frag")
+	: m_mainWindow(mainWindow), m_particle_system(10)
 {
 	Serialization::FromJSON(*this, (File::RootDir + "/last-session-cache.json").c_str());
 	// RenderState::SubscribeToSizeChanges([]() { Log::Info("The size of the rendering area has changed. Look, you can subscribe to this event !"); });
@@ -20,14 +20,13 @@ App::~App() {
 }
 
 void App::update() {
-	m_renderer.begin();
-	{
-		glClearColor(m_bgColor.r, m_bgColor.g, m_bgColor.b, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_shader.bind();
-		m_renderer.render();
-	}
-	m_renderer.end();
+	render();
+}
+
+void App::render() {
+	glClearColor(m_bgColor.r, m_bgColor.g, m_bgColor.b, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_particle_system.render();
 }
 
 void App::ImGuiWindows() {

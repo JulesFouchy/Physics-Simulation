@@ -1,15 +1,18 @@
 #include "ParticlesSystem.h"
 
 #include <Cool/Random/Random.h>
+#include <Cool/App/RenderState.h>
 
 ParticleSystem::ParticleSystem(int nbParticles)
-    : m_posSSBO(0),
+    : m_renderingShader("shaders/particle.vert", "shaders/particle.frag"),
+      m_posSSBO(0),
       m_velSSBO(1),
       m_colorSSBO(2),
       m_physicsShader("shaders/physics.comp"),
       m_colorGradientComputeShader("shaders/colorGradient.comp"),
       m_hueGradientComputeShader("shaders/hueGradient.comp")
 {
+    setNbParticles(nbParticles);
     // Vertex array
     GLCall(glGenVertexArrays(1, &m_vaoID));
     GLCall(glBindVertexArray(m_vaoID));
@@ -33,8 +36,6 @@ ParticleSystem::ParticleSystem(int nbParticles)
     // Vertex Attribute uv
     GLCall(glEnableVertexAttribArray(1));
     GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float))));
-    //
-    setNbParticles(nbParticles);
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -43,6 +44,8 @@ ParticleSystem::~ParticleSystem() {
 }
 
 void ParticleSystem::render() {
+    m_renderingShader.bind();
+    m_renderingShader.setUniform1f("u_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
     GLCall(glBindVertexArray(m_vaoID));
     GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, m_nbParticles));
 }
@@ -55,7 +58,10 @@ void ParticleSystem::setNbParticles(int N) {
     // Set
     m_nbParticles = N;
     // Resize SSBOs
-    m_posSSBO.uploadData  (m_nbParticles * 2, nullptr);
+    std::vector<float> v(N * 2);
+    for (auto& x : v)
+        x = Random::getMinus1to1();
+    m_posSSBO.uploadData  (v);
     m_velSSBO.uploadData  (m_nbParticles * 2, nullptr);
     m_colorSSBO.uploadData(m_nbParticles * 3, nullptr);
     // Update uniform

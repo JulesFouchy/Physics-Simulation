@@ -1,9 +1,10 @@
 #pragma once
 
 #include <Cool/App/IApp.h>
-#include <Cool/OpenGL/Shader.h>
-#include <Cool/Renderer_Fullscreen/Renderer_Fullscreen.h>
 #include <Cool/App/OpenGLWindow.h>
+#include <Cool/Serialization/GlmSerialization.h>
+
+#include "Particles/ParticlesSystem.h"
 
 using namespace Cool;
 
@@ -11,6 +12,8 @@ class App : public Cool::IApp {
 public:
 	App(OpenGLWindow& mainWindow);
 	~App();
+
+	void render();
 
 	void update() override;
 	void ImGuiWindows() override;
@@ -23,9 +26,8 @@ public:
 
 private:
 	OpenGLWindow& m_mainWindow;
-	Renderer_Fullscreen m_renderer;
-	Shader m_shader;
 	glm::vec3 m_bgColor = glm::vec3(0.478f, 0.674f, 0.792f);
+	ParticleSystem m_particle_system;
 #ifndef NDEBUG
 	bool m_bShow_Debug = true;
 	bool m_bShow_ImGuiDemo = false;
@@ -37,8 +39,8 @@ private:
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
-		//archive(
-		//	cereal::make_nvp("A serialization example", m_serializedClassExample)
-		//);
+		archive(
+			CEREAL_NVP(m_bgColor)
+		);
 	}
 };
