@@ -42,7 +42,8 @@ private:
 	void serialize(Archive& archive)
 	{
 		archive(
-			CEREAL_NVP(m_bgColor)
+			cereal::make_nvp("Background Color", m_bgColor),
+			cereal::make_nvp("Particle System", m_particle_system)
 		);
 	}
 };

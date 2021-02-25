@@ -10,11 +10,14 @@ public:
 
 	void render();
 	void update();
+	void ImGui();
 
 	void setNbParticles(int N);
 
 private:
 	int m_nbParticles;
+	float m_particle_size = 0.02f;
+
 	Shader m_renderingShader;
 	SSBO<float> m_posSSBO;
 	SSBO<float> m_velSSBO;
@@ -24,4 +27,15 @@ private:
 	ComputeShader<256> m_hueGradientComputeShader;
 	GLuint m_vaoID;
 	GLuint m_vboID;
+
+private:
+	//Serialization
+	friend class cereal::access;
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			cereal::make_nvp("Particle Size", m_particle_size)
+		);
+	}
 };

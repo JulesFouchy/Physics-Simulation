@@ -32,6 +32,10 @@ void App::render() {
 }
 
 void App::ImGuiWindows() {
+	// Particle System
+	ImGui::Begin("Particle System");
+	m_particle_system.ImGui();
+	ImGui::End();
 	//
 #ifndef NDEBUG
 	if (m_bShow_Debug) {

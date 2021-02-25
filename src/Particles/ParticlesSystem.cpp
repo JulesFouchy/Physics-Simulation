@@ -46,12 +46,17 @@ ParticleSystem::~ParticleSystem() {
 void ParticleSystem::render() {
     m_renderingShader.bind();
     m_renderingShader.setUniform1f("u_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
+    m_renderingShader.setUniform1f("u_particle_size", m_particle_size);
     GLCall(glBindVertexArray(m_vaoID));
     GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, m_nbParticles));
 }
 
 void ParticleSystem::update() {
     m_physicsShader.compute(m_nbParticles);
+}
+
+void ParticleSystem::ImGui() {
+    ImGui::SliderFloat("Size", &m_particle_size, 0.f, 0.1f);
 }
 
 void ParticleSystem::setNbParticles(int N) {
