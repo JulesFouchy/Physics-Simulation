@@ -2,6 +2,7 @@
 
 #include <Cool/App/IApp.h>
 #include <Cool/App/OpenGLWindow.h>
+#include <Cool/Renderer_Fullscreen/Renderer_Fullscreen.h>
 #include <Cool/Serialization/GlmSerialization.h>
 
 #include "Particles/ParticlesSystem.h"
@@ -27,6 +28,7 @@ public:
 private:
 	OpenGLWindow& m_mainWindow;
 	glm::vec3 m_bgColor = glm::vec3(0.478f, 0.674f, 0.792f);
+	Renderer_Fullscreen m_renderer;
 	ParticleSystem m_particle_system;
 #ifndef NDEBUG
 	bool m_bShow_Debug = true;
