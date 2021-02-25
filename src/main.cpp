@@ -8,7 +8,6 @@
 int main() {
 	// Init
 	Cool::Log::Initialize();
-	Cool::Time::Initialize();
 	// Init Glfw and set OpenGL version to 4.3
 	Cool::OpenGLWindowingSystem windowingSystem(4, 3);
 	// Create the main window and its OpenGL context
@@ -19,5 +18,6 @@ int main() {
 	// App
 	App app(mainWindow);
 	Cool::AppManager appManager(mainWindow, app);
+	Cool::Time::Initialize();
 	appManager.run();
 }
