@@ -74,6 +74,7 @@ void ParticleSystem::update() {
     physicsShader().get().setUniform1f("_dt", Time::deltaTime());
     physicsShader().get().setUniform1f("_stiffness", _stiffness);
     physicsShader().get().setUniform1f("_air_damping", _air_damping);
+    physicsShader().get().setUniform1f("_gravity", _gravity);
     physicsShader().get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
     physicsShader().compute(_nbParticles);
     _bPingPong = !_bPingPong;
@@ -87,6 +88,7 @@ void ParticleSystem::ImGui() {
     ImGui::SliderFloat("Size", &_particle_size, 0.f, 0.1f);
     ImGui::SliderFloat("Stiffness", &_stiffness, 0.f, 500.f);
     ImGui::SliderFloat("Damping", &_air_damping, 0.f, 10.f);
+    ImGui::SliderFloat("Gravity", &_gravity, 0.f, 10.f);
     if (ImGui::Button("Reset")) {
         setNbParticles(_nbParticles);
     }

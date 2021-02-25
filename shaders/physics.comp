@@ -7,6 +7,7 @@
 uniform float _dt;
 uniform float _air_damping;
 uniform float _stiffness;
+uniform float _gravity;
 uniform vec2 _mouse_pos;
 
 //? #define __bindingIN__  1
@@ -34,7 +35,7 @@ void cool_main(){
             vec2 acc = 
                 - (dirL + dirR) * _stiffness  // Spring attraction
                 - partVel[gid] * _air_damping // Air friction
-                + vec2(0., -1.)               // Gravity
+                + vec2(0., -_gravity)         // Gravity
             ;
             // apply
             partVel[gid] += acc * _dt;
