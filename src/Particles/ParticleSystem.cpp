@@ -95,15 +95,19 @@ void ParticleSystem::ImGui() {
 }
 
 void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
-    if (action == GLFW_PRESS) {
-        _check_held_particle_shader.get().bind();
-        _check_held_particle_shader.get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
-        _check_held_particle_shader.get().setUniform1f("_particle_radius", _particle_size);
-        _check_held_particle_shader.compute(_nbParticles);
-    }
-    else if (action == GLFW_RELEASE) {
-        unsigned int __idx = -1;
-        _held_particle_SSBO.uploadData(1, &__idx);
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        unsigned int idx;
+        _held_particle_SSBO.downloadData(1, &idx);
+        if (idx == -1) {
+            _check_held_particle_shader.get().bind();
+            _check_held_particle_shader.get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
+            _check_held_particle_shader.get().setUniform1f("_particle_radius", _particle_size);
+            _check_held_particle_shader.compute(_nbParticles);
+        }
+        else {
+            unsigned int __idx = -1;
+            _held_particle_SSBO.uploadData(1, &__idx);
+        }
     }
 }
 
