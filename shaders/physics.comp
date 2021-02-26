@@ -38,7 +38,7 @@ void cool_main(){
             vec2 dirR = partPosIN[gid] - partPosIN[gid + 1];
             vec2 acc = 
                 - (dirL + dirR) * _stiffness * NumberOfComputationsX  // Spring attraction
-                - partVel[gid] * _air_damping // Air friction
+                - (partVel[gid] - 0.5 * (partVel[gid+1] + partVel[gid-1])) * _air_damping // Air friction
                 + vec2(0., -_gravity)         // Gravity
             ;
             // apply
@@ -48,7 +48,7 @@ void cool_main(){
         else if (gid == 0) {
             partPosOUT[gid] = vec2(
                 partPosIN[gid].x,
-                _amplitude * sin(_time * _pulsation)
+                partPosIN[gid].y//_amplitude * sin(_time * _pulsation)
             );
         }
         else {
