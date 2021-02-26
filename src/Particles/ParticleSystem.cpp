@@ -93,7 +93,7 @@ void ParticleSystem::ImGui() {
     ImGui::SliderFloat("Damping", &_air_damping, 0.f, 10.f);
     ImGui::SliderFloat("Gravity", &_gravity, 0.f, 10.f);
     ImGui::SliderFloat("Amplitude", &_amplitude, 0.f, 2.f);
-    ImGui::SliderFloat("Pulsation", &_pulsation, 0.f, 10.f);
+    ImGui::SliderFloat("Pulsation", &_pulsation, 0.f, 30.f);
     if (ImGui::Button("Reset")) {
         setNbParticles(_nbParticles);
     }

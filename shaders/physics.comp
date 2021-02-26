@@ -54,7 +54,7 @@ void cool_main(){
         else {
             partPosOUT[gid] = vec2(
                 partPosIN[gid].x,
-                _amplitude * sin(_time * _pulsation)
+                partPosIN[gid].y//_amplitude * sin(_time * _pulsation)
             );
         }
     }
