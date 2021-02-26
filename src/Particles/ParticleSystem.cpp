@@ -76,6 +76,9 @@ void ParticleSystem::update() {
     physicsShader().get().setUniform1f("_air_damping", _air_damping);
     physicsShader().get().setUniform1f("_gravity", _gravity);
     physicsShader().get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
+    physicsShader().get().setUniform1f("_time", Time::time());
+    physicsShader().get().setUniform1f("_amplitude", _amplitude);
+    physicsShader().get().setUniform1f("_pulsation", _pulsation);
     physicsShader().compute(_nbParticles);
     _bPingPong = !_bPingPong;
 }
@@ -89,6 +92,8 @@ void ParticleSystem::ImGui() {
     ImGui::SliderFloat("Stiffness", &_stiffness, 0.f, 100.f);
     ImGui::SliderFloat("Damping", &_air_damping, 0.f, 10.f);
     ImGui::SliderFloat("Gravity", &_gravity, 0.f, 10.f);
+    ImGui::SliderFloat("Amplitude", &_amplitude, 0.f, 2.f);
+    ImGui::SliderFloat("Pulsation", &_pulsation, 0.f, 10.f);
     if (ImGui::Button("Reset")) {
         setNbParticles(_nbParticles);
     }
@@ -121,7 +126,7 @@ void ParticleSystem::setNbParticles(int N) {
     std::vector<float> v(N * 2);
     for (int i = 0; i < N; ++i) {
         v[2 * i] = (static_cast<float>(i) / static_cast<float>(N)) * 2.f - 1.f;
-        v[2 * i + 1] = i  == N / 2 ? 1.f : 0.f;
+        v[2 * i + 1] = 0.f;
     }
     _bPingPong = true;
     m_pos1SSBO.uploadData(v);

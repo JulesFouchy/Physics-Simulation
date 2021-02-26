@@ -24,6 +24,8 @@ private:
 	float _stiffness = 5.f;
 	float _air_damping = 10.f;
 	float _gravity = 1.f;
+	float _amplitude = 0.5f;
+	float _pulsation = 5.f;
 
 	Shader m_renderingShader;
 	bool _bPingPong = true;
@@ -52,7 +54,9 @@ private:
 			cereal::make_nvp("Particle Size", _particle_size),
 			cereal::make_nvp("Stiffness", _stiffness),
 			cereal::make_nvp("Air Damping", _air_damping),
-			cereal::make_nvp("Gravity", _gravity)
+			cereal::make_nvp("Gravity", _gravity),
+			cereal::make_nvp("Amplitude", _amplitude),
+			cereal::make_nvp("Pulsation", _pulsation)
 		);
 	}
 	template<class Archive>
@@ -63,7 +67,9 @@ private:
 			cereal::make_nvp("Particle Size", _particle_size),
 			cereal::make_nvp("Stiffness", _stiffness),
 			cereal::make_nvp("Air Damping", _air_damping),
-			cereal::make_nvp("Gravity", _gravity)
+			cereal::make_nvp("Gravity", _gravity),
+			cereal::make_nvp("Amplitude", _amplitude),
+			cereal::make_nvp("Pulsation", _pulsation)
 		);
 		setNbParticles(_nbParticles);
 	}

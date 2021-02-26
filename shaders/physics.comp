@@ -10,6 +10,10 @@ uniform float _stiffness;
 uniform float _gravity;
 uniform vec2 _mouse_pos;
 
+uniform float _time;
+uniform float _amplitude;
+uniform float _pulsation;
+
 //? #define __bindingIN__  1
 //? #define __bindingOUT__ 2
 layout(std430, binding=__bindingIN__) buffer particlePositions__bindingIN__ {
@@ -41,8 +45,17 @@ void cool_main(){
             partVel[gid] += acc * _dt;
             partPosOUT[gid] = partPosIN[gid] + partVel[gid] * _dt;
         }
+        else if (gid == 0) {
+            partPosOUT[gid] = vec2(
+                partPosIN[gid].x,
+                _amplitude * sin(_time * _pulsation)
+            );
+        }
         else {
-            partPosOUT[gid] = partPosIN[gid];
+            partPosOUT[gid] = vec2(
+                partPosIN[gid].x,
+                _amplitude * sin(_time * _pulsation)
+            );
         }
     }
     else {
