@@ -79,6 +79,10 @@ void ParticleSystem::update() {
     physicsShader().get().setUniform1f("_time", Time::time());
     physicsShader().get().setUniform1f("_amplitude", _amplitude);
     physicsShader().get().setUniform1f("_pulsation", _pulsation);
+    glm::vec2 curr_pos = Input::MouseInNormalizedRatioSpace();
+    physicsShader().get().setUniform2f("_body_position", curr_pos);
+    physicsShader().get().setUniform2f("_body_last_position", Input::CtrlOrCmdIsDown() ? _last_position : curr_pos);
+    _last_position = curr_pos;
     physicsShader().compute(_nbParticles);
     _bPingPong = !_bPingPong;
 }

@@ -26,6 +26,7 @@ private:
 	float _gravity = 1.f;
 	float _amplitude = 0.5f;
 	float _pulsation = 5.f;
+	glm::vec2 _last_position;
 
 	Shader m_renderingShader;
 	bool _bPingPong = true;
