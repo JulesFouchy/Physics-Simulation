@@ -1,7 +1,13 @@
 #include <Cool/OpenGL/ComputeShader.h>
 #include <Cool/OpenGL/SSBO.h>
+#include <Cool/Params/Presets.h>
 
 using namespace Cool;
+
+struct ColorParams {
+	glm::vec3 color_gradient_begin = glm::vec3(0.f);
+	glm::vec3 color_gradient_end = glm::vec3(0.f);
+};
 
 class ParticleSystem {
 public:
@@ -27,6 +33,7 @@ private:
 	float _amplitude = 0.5f;
 	float _pulsation = 5.f;
 	glm::vec2 _last_position;
+	Presets<ColorParams> _color_params;
 
 	Shader m_renderingShader;
 	bool _bPingPong = true;

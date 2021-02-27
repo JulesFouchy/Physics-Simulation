@@ -101,6 +101,7 @@ void ParticleSystem::ImGui() {
     if (ImGui::Button("Reset")) {
         setNbParticles(_nbParticles);
     }
+    _color_params.ImGui();
 }
 
 void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
