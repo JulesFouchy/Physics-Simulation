@@ -3,9 +3,9 @@
 using namespace Cool;
 
 struct ColorParamValues {
-	Param_Color color_gradient_begin = Param_Color("Color Gradient Begin", glm::vec3(0.1f, 0.8f, 0.7f));
-	Param_Color color_gradient_end   = Param_Color("Color Gradient End",   glm::vec3(0.9f, 0.4f, 0.7f));
-	Param_Color background           = Param_Color("Background",           glm::vec3(0.9f, 0.8f, 0.7f));
+	Param::Color color_gradient_begin = {"Color Gradient Begin", glm::vec3(0.1f, 0.8f, 0.7f)};
+	Param::Color color_gradient_end   = {"Color Gradient End",   glm::vec3(0.9f, 0.4f, 0.7f)};
+	Param::Color background           = {"Background",           glm::vec3(0.9f, 0.8f, 0.7f)};
 
 	bool ImGui() {
 		bool b = false;
