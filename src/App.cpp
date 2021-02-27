@@ -28,8 +28,6 @@ void App::update() {
 
 void App::render() {
 	m_renderer.begin();
-	glClearColor(m_bgColor.r, m_bgColor.g, m_bgColor.b, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_particle_system.render();
 	m_renderer.end();
 }
