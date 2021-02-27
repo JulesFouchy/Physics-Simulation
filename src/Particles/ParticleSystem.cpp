@@ -16,9 +16,11 @@ ParticleSystem::ParticleSystem(int nbParticles)
       _reset_velocities_shader("shaders/reset_particle_velocities.comp"),
       _check_held_particle_shader("shaders/check_held_particle.comp"),
       m_colorGradientComputeShader("shaders/colorGradient.comp"),
-      m_hueGradientComputeShader("shaders/hueGradient.comp")
+      m_hueGradientComputeShader("shaders/hueGradient.comp"),
+      _color_params([this]() {on_color_gradient_change(); })
 {
     setNbParticles(nbParticles);
+    on_color_gradient_change();
     // Compile compute shaders
     std::string physicsShaderSrc;
     File::ToString("shaders/physics.comp", &physicsShaderSrc);
@@ -53,6 +55,10 @@ ParticleSystem::ParticleSystem(int nbParticles)
     // Vertex Attribute uv
     GLCall(glEnableVertexAttribArray(1));
     GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float))));
+}
+
+void ParticleSystem::on_color_gradient_change() {
+    Log::ErrorWithoutBreakpoint("Hello");
 }
 
 ParticleSystem::~ParticleSystem() {

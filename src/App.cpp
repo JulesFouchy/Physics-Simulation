@@ -5,6 +5,7 @@
 #include <Cool/Serialization/JsonFile.h>
 #include <Cool/File/File.h>
 #include <Cool/Time/Time.h>
+#include <Cool/Params/ParamsHistory.h>
 
 App::App(OpenGLWindow& mainWindow)
 	: m_mainWindow(mainWindow), m_particle_system(10)
@@ -74,7 +75,12 @@ void App::ImGuiMenus() {
 
 void App::onKeyboardEvent(int key, int scancode, int action, int mods) {
 	if (!RenderState::IsExporting() && !ImGui::GetIO().WantTextInput) {
-
+		if (mods & GLFW_MOD_CONTROL && action == GLFW_RELEASE) {
+			if (Input::MatchesChar("z", key))
+				ParamsHistory::Get().move_backward();
+			if (Input::MatchesChar("y", key))
+				ParamsHistory::Get().move_forward();
+		}
 	}
 }
 

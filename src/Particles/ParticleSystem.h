@@ -18,6 +18,7 @@ public:
 private:
 	void setNbParticles(int N);
 	inline ComputeShader<256>& physicsShader() { return _bPingPong ? m_physicsShaderFrom1to2 : m_physicsShaderFrom2to1; }
+	void on_color_gradient_change();
 
 private:
 	int _nbParticles;

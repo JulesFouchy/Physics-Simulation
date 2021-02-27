@@ -34,3 +34,6 @@
 [submodule "Cool/ImGui"]
 	path = Cool/ImGui
 	url = https://github.com/CoolLibs/ImGui
+[submodule "Cool/History"]
+	path = Cool/History
+	url = https://github.com/CoolLibs/History
