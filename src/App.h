@@ -3,7 +3,6 @@
 #include <Cool/App/IApp.h>
 #include <Cool/App/OpenGLWindow.h>
 #include <Cool/Renderer_Fullscreen/Renderer_Fullscreen.h>
-#include <Cool/Serialization/GlmSerialization.h>
 
 #include "Particles/ParticleSystem.h"
 

@@ -7,6 +7,18 @@ using namespace Cool;
 struct ColorParams {
 	glm::vec3 color_gradient_begin = glm::vec3(0.f);
 	glm::vec3 color_gradient_end = glm::vec3(0.f);
+
+private:
+	//Serialization
+	friend class cereal::access;
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			cereal::make_nvp("Color Gradient Begin", color_gradient_begin),
+			cereal::make_nvp("Color Gradient End", color_gradient_end)
+		);
+	}
 };
 
 class ParticleSystem {
@@ -33,7 +45,8 @@ private:
 	float _amplitude = 0.5f;
 	float _pulsation = 5.f;
 	glm::vec2 _last_position;
-	Presets<ColorParams> _color_params;
+	Presets<ColorParams> _color_params_presets;
+	ColorParams _color_params;
 
 	Shader m_renderingShader;
 	bool _bPingPong = true;

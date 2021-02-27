@@ -31,3 +31,6 @@
 [submodule "Cool/Params"]
 	path = Cool/Params
 	url = https://github.com/CoolLibs/Params
+[submodule "Cool/ImGui"]
+	path = Cool/ImGui
+	url = https://github.com/CoolLibs/ImGui

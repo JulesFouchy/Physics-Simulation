@@ -16,7 +16,8 @@ ParticleSystem::ParticleSystem(int nbParticles)
       _reset_velocities_shader("shaders/reset_particle_velocities.comp"),
       _check_held_particle_shader("shaders/check_held_particle.comp"),
       m_colorGradientComputeShader("shaders/colorGradient.comp"),
-      m_hueGradientComputeShader("shaders/hueGradient.comp")
+      m_hueGradientComputeShader("shaders/hueGradient.comp"),
+      _color_params_presets("colors", File::RootDir + "/presets")
 {
     setNbParticles(nbParticles);
     // Compile compute shaders
@@ -101,7 +102,7 @@ void ParticleSystem::ImGui() {
     if (ImGui::Button("Reset")) {
         setNbParticles(_nbParticles);
     }
-    _color_params.ImGui();
+    _color_params_presets.ImGui(&_color_params);
 }
 
 void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
