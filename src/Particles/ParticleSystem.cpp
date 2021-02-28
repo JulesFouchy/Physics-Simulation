@@ -17,9 +17,9 @@ ParticleSystem::ParticleSystem()
       _check_held_particle_shader("shaders/check_held_particle.comp"),
       _compute_color_gradient_shader("shaders/color_gradient.comp"),
       m_hueGradientComputeShader("shaders/hueGradient.comp"),
+      _physics_params([this]() {on_nb_particles_change(); }),
       _color_params([this]() {on_color_gradient_change(); })
 {
-    setNbParticles(240);
     // Compile compute shaders
     std::string physicsShaderSrc;
     File::ToString("shaders/physics.comp", &physicsShaderSrc);
@@ -54,13 +54,15 @@ ParticleSystem::ParticleSystem()
     // Vertex Attribute uv
     GLCall(glEnableVertexAttribArray(1));
     GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float))));
+    //
+    on_nb_particles_change();
 }
 
 void ParticleSystem::on_color_gradient_change() {
     _compute_color_gradient_shader.get().bind();
     _compute_color_gradient_shader.get().setUniform3f("_color_begin", *_color_params->color_gradient_begin);
     _compute_color_gradient_shader.get().setUniform3f("_color_end", *_color_params->color_gradient_end);
-    _compute_color_gradient_shader.compute(_nbParticles);
+    _compute_color_gradient_shader.compute(*_physics_params->nb_particles);
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -73,47 +75,38 @@ void ParticleSystem::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_renderingShader.bind();
     m_renderingShader.setUniform1f("_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
-    m_renderingShader.setUniform1f("_particle_size", _particle_size);
+    m_renderingShader.setUniform1f("_particle_size", *_physics_params->size);
     m_renderingShader.setUniform1i("_bPingPong", _bPingPong);
-    m_renderingShader.setUniform1i("_nb_particles", _nbParticles);
-    GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, _nbParticles));
+    m_renderingShader.setUniform1i("_nb_particles", *_physics_params->nb_particles);
+    GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, *_physics_params->nb_particles));
 }
 
 void ParticleSystem::update() {
     physicsShader().get().bind();
     physicsShader().get().setUniform1f("_dt", Time::deltaTime());
-    physicsShader().get().setUniform1f("_stiffness", _stiffness);
-    physicsShader().get().setUniform1f("_air_damping", _air_damping);
-    physicsShader().get().setUniform1f("_gravity", _gravity);
+    physicsShader().get().setUniform1f("_stiffness", *_physics_params->stiffness);
+    physicsShader().get().setUniform1f("_air_damping", *_physics_params->internal_damping);
+    physicsShader().get().setUniform1f("_gravity", *_physics_params->gravity);
     physicsShader().get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
     physicsShader().get().setUniform1f("_time", Time::time());
-    physicsShader().get().setUniform1f("_amplitude", _amplitude);
-    physicsShader().get().setUniform1f("_pulsation", _pulsation);
+    //physicsShader().get().setUniform1f("_amplitude", _amplitude);
+    //physicsShader().get().setUniform1f("_pulsation", _pulsation);
     glm::vec2 curr_pos = Input::MouseInNormalizedRatioSpace();
     physicsShader().get().setUniform2f("_body_position", curr_pos);
     physicsShader().get().setUniform2f("_body_last_position", Input::AltIsDown() ? _last_position : curr_pos);
     _last_position = curr_pos;
-    physicsShader().compute(_nbParticles);
+    physicsShader().compute(*_physics_params->nb_particles);
     _bPingPong = !_bPingPong;
 }
 
 void ParticleSystem::ImGui() {
-    int N = _nbParticles;
-    if (ImGui::SliderInt("Number of Particles", &N, 1, 75)) {
-        setNbParticles(N);
-    }
-    ImGui::SliderFloat("Size", &_particle_size, 0.f, 0.1f);
-    ImGui::SliderFloat("Stiffness", &_stiffness, 0.f, 100.f);
-    ImGui::SliderFloat("Damping", &_air_damping, 0.f, 10.f);
-    ImGui::SliderFloat("Gravity", &_gravity, 0.f, 10.f);
-    ImGui::SliderFloat("Amplitude", &_amplitude, 0.f, 2.f);
-    ImGui::SliderFloat("Pulsation", &_pulsation, 0.f, 30.f);
-    if (ImGui::Button("Reset")) {
-        setNbParticles(_nbParticles);
-    }
+    ImGui::PushID(321);
+        _physics_params.ImGui();
     ImGui::Separator();
-    ImGui::Separator();
-    _color_params.ImGui();
+    ImGui::PopID();
+    ImGui::PushID(322);
+        _color_params.ImGui();
+    ImGui::PopID();
 }
 
 void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
@@ -123,8 +116,8 @@ void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
         if (idx == -1) {
             _check_held_particle_shader.get().bind();
             _check_held_particle_shader.get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
-            _check_held_particle_shader.get().setUniform1f("_particle_radius", _particle_size);
-            _check_held_particle_shader.compute(_nbParticles);
+            _check_held_particle_shader.get().setUniform1f("_particle_radius", *_physics_params->size);
+            _check_held_particle_shader.compute(*_physics_params->nb_particles);
         }
         else {
             unsigned int __idx = -1;
@@ -133,9 +126,9 @@ void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
     }
 }
 
-void ParticleSystem::setNbParticles(int N) {
-    // Set
-    _nbParticles = N;
+void ParticleSystem::on_nb_particles_change() {
+    Log::Warn("Call");
+    const auto N = *_physics_params->nb_particles;
     // Held particle SSBO
     unsigned int __idx = -1;
     _held_particle_SSBO.uploadData(1, &__idx);
@@ -148,9 +141,9 @@ void ParticleSystem::setNbParticles(int N) {
     _bPingPong = true;
     m_pos1SSBO.uploadData(v);
     m_pos2SSBO.uploadData(v);
-    m_velSSBO.uploadData  (_nbParticles * 2, nullptr);
-    _reset_velocities_shader.compute(_nbParticles);
-    m_colorSSBO.uploadData(_nbParticles * 3, nullptr);
+    m_velSSBO.uploadData  (N * 2, nullptr);
+    _reset_velocities_shader.compute(N);
+    m_colorSSBO.uploadData(N * 3, nullptr);
     // Update colors
     on_color_gradient_change();
     // Update uniform
