@@ -8,7 +8,7 @@
 #include <Cool/Params/ParamsHistory.h>
 
 App::App(OpenGLWindow& mainWindow)
-	: m_mainWindow(mainWindow), m_particle_system(10)
+	: m_mainWindow(mainWindow)
 {
 	Serialization::FromJSON(*this, (File::RootDir + "/last-session-cache.json").c_str());
 	// RenderState::SubscribeToSizeChanges([]() { Log::Info("The size of the rendering area has changed. Look, you can subscribe to this event !"); });

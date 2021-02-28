@@ -14,16 +14,18 @@ struct ColorParamValues {
 
 	bool ImGui(Action on_edit_ended) {
 		bool b = false;
-		if (b |= color_gradient_begin.ImGui(on_edit_ended))
-			_on_color_gradient_change();
-		if (b |= color_gradient_end.ImGui(on_edit_ended))
-			_on_color_gradient_change();
+		b |= color_gradient_begin.ImGui(on_edit_ended, _on_color_gradient_change);
+		b |= color_gradient_end  .ImGui(on_edit_ended, _on_color_gradient_change);
 		b |= background.ImGui(on_edit_ended);
 		return b;
 	}
 
+	void on_all_values_change() {
+		_on_color_gradient_change();
+	}
+
 private:
-	std::function<void()> _on_color_gradient_change;
+	std::function<void()> _on_color_gradient_change = []() {Log::ErrorWithoutBreakpoint(":("); };
 
 private:
 	// Serialization

@@ -6,7 +6,7 @@ using namespace Cool;
 
 class ParticleSystem {
 public:
-	ParticleSystem(int nbParticles);
+	ParticleSystem();
 	~ParticleSystem();
 
 	void render();

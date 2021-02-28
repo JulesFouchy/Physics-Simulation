@@ -6,7 +6,7 @@
 #include <Cool/String/String.h>
 #include <Cool/App/Input.h>
 
-ParticleSystem::ParticleSystem(int nbParticles)
+ParticleSystem::ParticleSystem()
     : m_renderingShader("shaders/particle.vert", "shaders/particle.frag"),
       m_pos1SSBO(1),
       m_pos2SSBO(2),
@@ -19,7 +19,7 @@ ParticleSystem::ParticleSystem(int nbParticles)
       m_hueGradientComputeShader("shaders/hueGradient.comp"),
       _color_params([this]() {on_color_gradient_change(); })
 {
-    setNbParticles(nbParticles);
+    setNbParticles(240);
     // Compile compute shaders
     std::string physicsShaderSrc;
     File::ToString("shaders/physics.comp", &physicsShaderSrc);
