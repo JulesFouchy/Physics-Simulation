@@ -12,13 +12,13 @@ struct ColorParamValues {
 	Param::Color color_gradient_end   = {"Color Gradient End",   glm::vec3(0.9f, 0.4f, 0.7f)};
 	Param::Color background           = {"Background",           glm::vec3(0.9f, 0.8f, 0.7f)};
 
-	bool ImGui() {
+	bool ImGui(Action on_edit_ended) {
 		bool b = false;
-		if (b |= color_gradient_begin.ImGui())
+		if (b |= color_gradient_begin.ImGui(on_edit_ended))
 			_on_color_gradient_change();
-		if (b |= color_gradient_end.ImGui())
+		if (b |= color_gradient_end.ImGui(on_edit_ended))
 			_on_color_gradient_change();
-		b |= background.ImGui();
+		b |= background.ImGui(on_edit_ended);
 		return b;
 	}
 
