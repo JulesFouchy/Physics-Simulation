@@ -121,7 +121,6 @@ void ParticleSystem::reset_pos_and_vel() {
     _bPingPong = true;
     m_pos1SSBO.uploadData(v);
     m_pos2SSBO.uploadData(v);
-    m_velSSBO.uploadData(N * 2, nullptr);
     _reset_velocities_shader.compute(N);
 }
 
@@ -149,7 +148,10 @@ void ParticleSystem::on_nb_particles_change() {
         // Held particle SSBO
         unsigned int __idx = -1;
         _held_particle_SSBO.uploadData(1, &__idx);
-        // Reset pos and vel
+        // Update pos and vel
+        m_pos1SSBO.uploadData(N * 2, nullptr);
+        m_pos2SSBO.uploadData(N * 2, nullptr);
+        m_velSSBO.uploadData(N * 2, nullptr);
         reset_pos_and_vel();
         // Update colors
         m_colorSSBO.uploadData(N * 3, nullptr);
