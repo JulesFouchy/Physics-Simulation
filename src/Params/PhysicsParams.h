@@ -9,7 +9,7 @@ struct PhysicsParamValues {
 	Param::Float internal_damping = {"Internal Damping", 10.f,  0.f,  10.f};
 	Param::Float gravity =          {"Gravity",          1.f,   0.f,  10.f};
 	Param::Float size =             {"Size",             0.02f, 0.f,  0.1f};
-	Param::Int nb_particles =       {"Number of Particles", 240};
+	Param::Int nb_particles =       {"Number of Particles", 240, 1, 1000};
 
 	bool ImGui(Action on_edit_ended, std::function<void()> on_value_change) {
 		bool b = false;
