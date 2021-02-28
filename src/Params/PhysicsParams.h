@@ -16,6 +16,7 @@ struct PhysicsParamValues {
 		b |= stiffness.ImGui(on_edit_ended, on_value_change);
 		b |= internal_damping.ImGui(on_edit_ended, on_value_change);
 		b |= gravity.ImGui(on_edit_ended, on_value_change);
+		b |= size.ImGui(on_edit_ended, on_value_change);
 		b |= nb_particles.ImGui(on_edit_ended, on_value_change);
 		return b;
 	}
@@ -30,6 +31,7 @@ private:
 			stiffness,
 			internal_damping,
 			gravity,
+			size,
 			nb_particles
 		);
 	}

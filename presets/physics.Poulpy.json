@@ -1,0 +1,22 @@
+{
+    "value0": {
+        "Values": {
+            "value0": {
+                "Stiffness": 85.12799835205078
+            },
+            "value1": {
+                "Internal Damping": 15.0
+            },
+            "value2": {
+                "Gravity": 6.90500020980835
+            },
+            "value3": {
+                "Size": 0.023000000044703485
+            },
+            "value4": {
+                "Number of Particles": 240
+            }
+        },
+        "uuid": -1927192346
+    }
+}
