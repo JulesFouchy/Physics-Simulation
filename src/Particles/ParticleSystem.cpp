@@ -100,6 +100,8 @@ void ParticleSystem::update() {
 }
 
 void ParticleSystem::ImGui() {
+    if (ImGui::Button("Reset"))
+        reset_pos_and_vel();
     ImGui::PushID(321);
         _physics_params.ImGui();
     ImGui::Separator();
@@ -107,6 +109,20 @@ void ParticleSystem::ImGui() {
     ImGui::PushID(322);
         _color_params.ImGui();
     ImGui::PopID();
+}
+
+void ParticleSystem::reset_pos_and_vel() {
+    const auto N = *_physics_params->nb_particles;
+    std::vector<float> v(N * 2);
+    for (int i = 0; i < N; ++i) {
+        v[2 * i] = (static_cast<float>(i) / static_cast<float>(N)) * 2.f - 1.f;
+        v[2 * i + 1] = 0.f;
+    }
+    _bPingPong = true;
+    m_pos1SSBO.uploadData(v);
+    m_pos2SSBO.uploadData(v);
+    m_velSSBO.uploadData(N * 2, nullptr);
+    _reset_velocities_shader.compute(N);
 }
 
 void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
@@ -133,19 +149,10 @@ void ParticleSystem::on_nb_particles_change() {
         // Held particle SSBO
         unsigned int __idx = -1;
         _held_particle_SSBO.uploadData(1, &__idx);
-        // Resize SSBOs
-        std::vector<float> v(N * 2);
-        for (int i = 0; i < N; ++i) {
-            v[2 * i] = (static_cast<float>(i) / static_cast<float>(N)) * 2.f - 1.f;
-            v[2 * i + 1] = 0.f;
-        }
-        _bPingPong = true;
-        m_pos1SSBO.uploadData(v);
-        m_pos2SSBO.uploadData(v);
-        m_velSSBO.uploadData(N * 2, nullptr);
-        _reset_velocities_shader.compute(N);
-        m_colorSSBO.uploadData(N * 3, nullptr);
+        // Reset pos and vel
+        reset_pos_and_vel();
         // Update colors
+        m_colorSSBO.uploadData(N * 3, nullptr);
         on_color_gradient_change();
     }
 }

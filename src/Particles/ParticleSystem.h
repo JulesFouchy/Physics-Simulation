@@ -13,6 +13,7 @@ public:
 	void render();
 	void update();
 	void ImGui();
+	void reset_pos_and_vel();
 	
 	void onMouseButtonEvent(int button, int action, int mods);
 
