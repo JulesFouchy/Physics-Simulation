@@ -127,39 +127,27 @@ void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
 }
 
 void ParticleSystem::on_nb_particles_change() {
-    Log::Warn("Call");
     const auto N = *_physics_params->nb_particles;
-    // Held particle SSBO
-    unsigned int __idx = -1;
-    _held_particle_SSBO.uploadData(1, &__idx);
-    // Resize SSBOs
-    std::vector<float> v(N * 2);
-    for (int i = 0; i < N; ++i) {
-        v[2 * i] = (static_cast<float>(i) / static_cast<float>(N)) * 2.f - 1.f;
-        v[2 * i + 1] = 0.f;
+    if (_current_nb_particles != N) {
+        _current_nb_particles = N;
+        // Held particle SSBO
+        unsigned int __idx = -1;
+        _held_particle_SSBO.uploadData(1, &__idx);
+        // Resize SSBOs
+        std::vector<float> v(N * 2);
+        for (int i = 0; i < N; ++i) {
+            v[2 * i] = (static_cast<float>(i) / static_cast<float>(N)) * 2.f - 1.f;
+            v[2 * i + 1] = 0.f;
+        }
+        _bPingPong = true;
+        m_pos1SSBO.uploadData(v);
+        m_pos2SSBO.uploadData(v);
+        m_velSSBO.uploadData(N * 2, nullptr);
+        _reset_velocities_shader.compute(N);
+        m_colorSSBO.uploadData(N * 3, nullptr);
+        // Update colors
+        on_color_gradient_change();
     }
-    _bPingPong = true;
-    m_pos1SSBO.uploadData(v);
-    m_pos2SSBO.uploadData(v);
-    m_velSSBO.uploadData  (N * 2, nullptr);
-    _reset_velocities_shader.compute(N);
-    m_colorSSBO.uploadData(N * 3, nullptr);
-    // Update colors
-    on_color_gradient_change();
-    // Update uniform
-    // m_physicsShader.get().bind();
-    // m_physicsShader.get().setUniform1i("u_NbOfParticles", m_nbParticles);
-    // m_colorGradientComputeShader.get().bind();
-    // m_colorGradientComputeShader.get().setUniform1i("u_NbOfParticles", m_nbParticles);
-    // m_colorGradientComputeShader.get().unbind();
-    // m_hueGradientComputeShader.get().bind();
-    // m_hueGradientComputeShader.get().setUniform1i("u_NbOfParticles", m_nbParticles);
-    // m_hueGradientComputeShader.get().unbind();
-    // m_setAllRestPositionsComputeShader.get().bind();
-    // m_setAllRestPositionsComputeShader.get().setUniform1i("u_NbOfParticles", m_nbParticles);
-    // m_setAllRestPositionsComputeShader.get().unbind();
-    // Colors
-    // applyParticleColors(colorSettings);
 }
 
 //void ParticleSystem::applyParticleColors(const ColorSettingsValues& colorSettings) {

@@ -23,6 +23,7 @@ private:
 
 private:
 	glm::vec2 _last_position;
+	int _current_nb_particles = 0;
 	PhysicsParams _physics_params;
 	ColorParams _color_params;
 
