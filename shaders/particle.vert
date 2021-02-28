@@ -24,7 +24,7 @@ layout(std430, binding=0) buffer colors{
 
 void main(){
     vTexCoords = aTexCoords;
-    vColor = vec3(1., 0.5, 0.3); //vec3(channel[3*gl_InstanceID],channel[3*gl_InstanceID+1],channel[3*gl_InstanceID+2]);
+    vColor = vec3(channel[3*gl_InstanceID],channel[3*gl_InstanceID+1],channel[3*gl_InstanceID+2]);
     const int nbPartPerTentacle = (_nb_particles-1) / 8 +1;
     if (gl_InstanceID % nbPartPerTentacle == nbPartPerTentacle - 1 || gl_InstanceID == _nb_particles - 1) {
         vec2 partPos = _bPingPong ? partPos1[gl_InstanceID] : partPos2[gl_InstanceID];

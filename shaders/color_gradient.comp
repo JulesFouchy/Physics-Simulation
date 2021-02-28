@@ -4,17 +4,17 @@
 //? uniform int NumberOfComputationsY;
 //? uniform int NumberOfComputationsZ;
 
-uniform vec3 colorStart;
-uniform vec3 colorEnd;
+uniform vec3 _color_begin;
+uniform vec3 _color_end;
 
-layout(std430, binding=2) buffer colors{
+layout(std430, binding=0) buffer colors{
    float channels[];
 };
 
 void cool_main(){
     uint gid = gl_GlobalInvocationID.x;
     float t = gid / float(NumberOfComputationsX);
-    vec3 col = mix(colorStart, colorEnd, t);
+    vec3 col = mix(_color_begin, _color_end, t);
         
     channels[3 * gid + 0] = col.r;
     channels[3 * gid + 1] = col.g;

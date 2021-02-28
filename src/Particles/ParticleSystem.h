@@ -42,7 +42,7 @@ private:
 	ComputeShader<256> m_physicsShaderFrom2to1;
 	ComputeShader<256> _reset_velocities_shader;
 	ComputeShader<256> _check_held_particle_shader;
-	ComputeShader<256> m_colorGradientComputeShader;
+	ComputeShader<256> _compute_color_gradient_shader;
 	ComputeShader<256> m_hueGradientComputeShader;
 	GLuint m_vaoID;
 	GLuint m_vboID;

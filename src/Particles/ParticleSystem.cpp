@@ -15,12 +15,11 @@ ParticleSystem::ParticleSystem(int nbParticles)
       _held_particle_SSBO(4),
       _reset_velocities_shader("shaders/reset_particle_velocities.comp"),
       _check_held_particle_shader("shaders/check_held_particle.comp"),
-      m_colorGradientComputeShader("shaders/colorGradient.comp"),
+      _compute_color_gradient_shader("shaders/color_gradient.comp"),
       m_hueGradientComputeShader("shaders/hueGradient.comp"),
       _color_params([this]() {on_color_gradient_change(); })
 {
     setNbParticles(nbParticles);
-    on_color_gradient_change();
     // Compile compute shaders
     std::string physicsShaderSrc;
     File::ToString("shaders/physics.comp", &physicsShaderSrc);
@@ -58,7 +57,10 @@ ParticleSystem::ParticleSystem(int nbParticles)
 }
 
 void ParticleSystem::on_color_gradient_change() {
-    Log::ErrorWithoutBreakpoint("Hello");
+    _compute_color_gradient_shader.get().bind();
+    _compute_color_gradient_shader.get().setUniform3f("_color_begin", *_color_params->color_gradient_begin);
+    _compute_color_gradient_shader.get().setUniform3f("_color_end", *_color_params->color_gradient_end);
+    _compute_color_gradient_shader.compute(_nbParticles);
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -149,6 +151,8 @@ void ParticleSystem::setNbParticles(int N) {
     m_velSSBO.uploadData  (_nbParticles * 2, nullptr);
     _reset_velocities_shader.compute(_nbParticles);
     m_colorSSBO.uploadData(_nbParticles * 3, nullptr);
+    // Update colors
+    on_color_gradient_change();
     // Update uniform
     // m_physicsShader.get().bind();
     // m_physicsShader.get().setUniform1i("u_NbOfParticles", m_nbParticles);
