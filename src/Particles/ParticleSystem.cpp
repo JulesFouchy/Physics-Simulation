@@ -98,7 +98,8 @@ void ParticleSystem::update() {
     physicsShader().get().bind();
     physicsShader().get().setUniform1f("_dt", Time::deltaTime());
     physicsShader().get().setUniform1f("_stiffness", *_physics_params->stiffness);
-    physicsShader().get().setUniform1f("_air_damping", *_physics_params->internal_damping);
+    physicsShader().get().setUniform1f("_internal_damping", *_physics_params->internal_damping);
+    physicsShader().get().setUniform1f("_external_damping", *_physics_params->external_damping);
     physicsShader().get().setUniform1f("_gravity", *_physics_params->gravity);
     physicsShader().get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
     physicsShader().get().setUniform1f("_time", Time::time());
