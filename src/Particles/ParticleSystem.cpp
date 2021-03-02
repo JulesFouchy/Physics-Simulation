@@ -126,9 +126,16 @@ void ParticleSystem::ImGui() {
 void ParticleSystem::reset_pos_and_vel() {
     const auto N = *_physics_params->nb_particles;
     std::vector<float> v(N * 2);
+    constexpr float TAU = 2.f * glm::pi<float>();
+    constexpr float delta_angle = 0.48 * TAU / 8;
+    constexpr float base_angle = -TAU / 4 - 3.5 * delta_angle;
     for (int i = 0; i < N; ++i) {
-        v[2 * i] = (static_cast<float>(i) / static_cast<float>(N)) * 2.f - 1.f;
-        v[2 * i + 1] = 0.f;
+        int nbPartPerTentacle = (N - 1) / 8 + 1;
+        int id = i % nbPartPerTentacle;
+        const float angle = base_angle + delta_angle * (i / nbPartPerTentacle);
+        const float radius = _poulpe.size() - 0.075 + id * 0.01;
+        v[2 * i]     = radius * cos(angle);
+        v[2 * i + 1] = radius * sin(angle);
     }
     _bPingPong = true;
     m_pos1SSBO.uploadData(v);
