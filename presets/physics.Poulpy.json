@@ -8,7 +8,7 @@
                 "Internal Damping": 15.0
             },
             "value2": {
-                "Gravity": 6.90500020980835
+                "Gravity": 3.565000057220459
             },
             "value3": {
                 "Size": 0.04899999871850014
@@ -17,6 +17,6 @@
                 "Number of Particles": 240
             }
         },
-        "uuid": -2012495539
+        "uuid": 1661986991
     }
 }
