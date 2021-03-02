@@ -27,10 +27,7 @@ void main(){
     vColor = vec3(channel[3*gl_InstanceID],channel[3*gl_InstanceID+1],channel[3*gl_InstanceID+2]);
     const int nbPartPerTentacle = (_nb_particles-1) / 8 +1;
     if (gl_InstanceID % nbPartPerTentacle == nbPartPerTentacle - 1 || gl_InstanceID == _nb_particles - 1) {
-        vec2 partPos = _bPingPong ? partPos1[gl_InstanceID] : partPos2[gl_InstanceID];
-        vec2 pos = partPos + aVertexPos * _particle_size;
-        pos.x *= _invAspectRatio;
-        gl_Position = vec4(pos, 0.0, 1.0);
+        gl_Position = vec4(100., 100., 0.0, 1.0); // Ugly way of discarding the primitive
     }
     else {
         vec2 pos1 = _bPingPong ? partPos1[gl_InstanceID]   : partPos2[gl_InstanceID];
