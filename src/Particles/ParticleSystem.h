@@ -68,5 +68,6 @@ private:
 			cereal::make_nvp("Color", _color_params)
 		);
 		on_nb_particles_change();
+		on_color_gradient_change();
 	}
 };

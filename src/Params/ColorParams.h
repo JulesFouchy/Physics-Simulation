@@ -8,12 +8,16 @@ struct ColorParamValues {
 	Param::Color color_gradient_begin = {"Color Gradient Begin", glm::vec3(0.1f, 0.8f, 0.7f)};
 	Param::Color color_gradient_end   = {"Color Gradient End",   glm::vec3(0.9f, 0.4f, 0.7f)};
 	Param::Color background           = {"Background",           glm::vec3(0.9f, 0.8f, 0.7f)};
+	Param::Color poulpe_body          = {"Poulpe Body",          glm::vec3(0.9f, 0.8f, 0.7f)};
+	Param::Color poulpe_elements      = {"Poulpe Elements",      glm::vec3(0.9f, 0.8f, 0.7f)};
 
 	bool ImGui(Action on_edit_ended, std::function<void()> on_value_change) {
 		bool b = false;
 		b |= color_gradient_begin.ImGui(on_edit_ended, on_value_change);
 		b |= color_gradient_end  .ImGui(on_edit_ended, on_value_change);
 		b |= background          .ImGui(on_edit_ended, on_value_change);
+		b |= poulpe_body.ImGui(on_edit_ended, on_value_change);
+		b |= poulpe_elements.ImGui(on_edit_ended, on_value_change);
 		return b;
 	}
 
@@ -26,7 +30,9 @@ private:
 		archive(
 			color_gradient_begin,
 			color_gradient_end,
-			background
+			background,
+			poulpe_body,
+			poulpe_elements
 		);
 	}
 };

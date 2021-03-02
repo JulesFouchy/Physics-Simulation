@@ -81,6 +81,8 @@ void ParticleSystem::render() {
     _poulpe_shader.setUniform1f("_invAspectRatio", 1.f / RenderState::Size().aspectRatio());
     _poulpe_shader.setUniform1f("_size", _poulpe.size());
     _poulpe_shader.setUniform2f("_position", _poulpe.position());
+    _poulpe_shader.setUniform3f("_body_color", *_color_params->poulpe_body);
+    _poulpe_shader.setUniform3f("_second_color", *_color_params->poulpe_elements);
     GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1));
     // Particles
     m_renderingShader.bind();
