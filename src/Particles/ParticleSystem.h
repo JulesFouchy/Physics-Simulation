@@ -2,6 +2,7 @@
 #include <Cool/OpenGL/SSBO.h>
 #include "Params/ColorParams.h"
 #include "Params/PhysicsParams.h"
+#include "PoulpeBody.h"
 
 using namespace Cool;
 
@@ -16,6 +17,7 @@ public:
 	void reset_pos_and_vel();
 	
 	void onMouseButtonEvent(int button, int action, int mods);
+	inline void onMouseMoveEvent(double xPos, double yPos) { _poulpe.onMouseMoveEvent(xPos, yPos); }
 
 private:
 	void on_nb_particles_change();
@@ -23,10 +25,10 @@ private:
 	void on_color_gradient_change();
 
 private:
-	glm::vec2 _last_position;
 	int _current_nb_particles = 0;
 	PhysicsParams _physics_params;
 	ColorParams _color_params;
+	PoulpeBody _poulpe;
 
 	Shader m_renderingShader;
 	bool _bPingPong = true;

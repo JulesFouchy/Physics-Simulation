@@ -96,8 +96,8 @@ void App::onScrollEvent(double xOffset, double yOffset) {
 	}
 }
 
-void App::onMouseMoveEvent(double xpos, double ypos) {
+void App::onMouseMoveEvent(double xPos, double yPos) {
 	if (!RenderState::IsExporting() && !ImGui::GetIO().WantCaptureMouse) {
-
+		m_particle_system.onMouseMoveEvent(xPos, yPos);
 	}
 }

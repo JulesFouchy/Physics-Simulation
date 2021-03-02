@@ -14,8 +14,7 @@ uniform float _time;
 uniform float _amplitude;
 uniform float _pulsation;
 
-uniform vec2 _body_position;
-uniform vec2 _body_last_position;
+uniform vec2 _body_delta;
 
 //? #define __bindingIN__  1
 //? #define __bindingOUT__ 2
@@ -51,7 +50,7 @@ void cool_main(){
             partPosOUT[gid] = partPosIN[gid] + partVel[gid] * _dt;
         }
         else if (ggid == 0) {
-            partPosOUT[gid] = _body_position - _body_last_position + vec2(
+            partPosOUT[gid] = _body_delta + vec2(
                 partPosIN[gid].x,
                 partPosIN[gid].y//_amplitude * sin(_time * _pulsation)
             );
