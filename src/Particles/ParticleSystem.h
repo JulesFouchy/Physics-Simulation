@@ -3,6 +3,7 @@
 #include "Params/ColorParams.h"
 #include "Params/PhysicsParams.h"
 #include "PoulpeBody.h"
+#include <Cool/FileWatcher/FileWatcher.h>
 
 using namespace Cool;
 
@@ -46,6 +47,7 @@ private:
 	ComputeShader<256> m_hueGradientComputeShader;
 	GLuint m_vaoID;
 	GLuint m_vboID;
+	FileWatcher _poulpe_watcher;
 
 private:
 	//Serialization

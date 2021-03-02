@@ -19,8 +19,10 @@ ParticleSystem::ParticleSystem()
       _compute_color_gradient_shader("shaders/color_gradient.comp"),
       m_hueGradientComputeShader("shaders/hueGradient.comp"),
       _physics_params([this]() {on_nb_particles_change(); }),
-      _color_params([this]() {on_color_gradient_change(); })
+      _color_params([this]() {on_color_gradient_change(); }),
+    _poulpe_watcher([this](const char* path) {_poulpe_shader.createProgram("shaders/poulpe.vert", "shaders/poulpe.frag"); })
 {
+    _poulpe_watcher.setPath("shaders/poulpe.frag");
     // Compile compute shaders
     std::string physicsShaderSrc;
     File::ToString("shaders/physics.comp", &physicsShaderSrc);
@@ -90,6 +92,7 @@ void ParticleSystem::render() {
 }
 
 void ParticleSystem::update() {
+    _poulpe_watcher.update();
     physicsShader().get().bind();
     physicsShader().get().setUniform1f("_dt", Time::deltaTime());
     physicsShader().get().setUniform1f("_stiffness", *_physics_params->stiffness);

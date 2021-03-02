@@ -37,3 +37,6 @@
 [submodule "Cool/History"]
 	path = Cool/History
 	url = https://github.com/CoolLibs/History
+[submodule "Cool/FileWatcher"]
+	path = Cool/FileWatcher
+	url = https://github.com/CoolLibs/FileWatcher
