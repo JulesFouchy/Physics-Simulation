@@ -31,6 +31,7 @@ private:
 	PoulpeBody _poulpe;
 
 	Shader m_renderingShader;
+	Shader _poulpe_shader;
 	bool _bPingPong = true;
 	SSBO<float> m_pos1SSBO;
 	SSBO<float> m_pos2SSBO;

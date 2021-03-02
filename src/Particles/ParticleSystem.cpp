@@ -8,6 +8,7 @@
 
 ParticleSystem::ParticleSystem()
     : m_renderingShader("shaders/particle.vert", "shaders/particle.frag"),
+      _poulpe_shader("shaders/poulpe.vert", "shaders/poulpe.frag"),
       m_pos1SSBO(1),
       m_pos2SSBO(2),
       m_velSSBO(3),
@@ -73,6 +74,13 @@ ParticleSystem::~ParticleSystem() {
 void ParticleSystem::render() {
     glClearColor(_color_params->background->r, _color_params->background->g, _color_params->background->b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Poulpe
+    _poulpe_shader.bind();
+    _poulpe_shader.setUniform1f("_invAspectRatio", 1.f / RenderState::Size().aspectRatio());
+    _poulpe_shader.setUniform1f("_size", _poulpe.size());
+    _poulpe_shader.setUniform2f("_position", _poulpe.position());
+    GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1));
+    // Particles
     m_renderingShader.bind();
     m_renderingShader.setUniform1f("_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
     m_renderingShader.setUniform1f("_particle_size", *_physics_params->size);
@@ -132,11 +140,17 @@ void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
             _check_held_particle_shader.get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
             _check_held_particle_shader.get().setUniform1f("_particle_radius", *_physics_params->size);
             _check_held_particle_shader.compute(*_physics_params->nb_particles);
+            _held_particle_SSBO.downloadData(1, &idx);
+            if (idx == -1)
+                _poulpe.onMouseButtonEvent(button, action, mods);
         }
         else {
             unsigned int __idx = -1;
             _held_particle_SSBO.uploadData(1, &__idx);
         }
+    }
+    else {
+        _poulpe.onMouseButtonEvent(button, action, mods);
     }
 }
 
