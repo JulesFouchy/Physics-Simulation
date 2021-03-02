@@ -2,6 +2,7 @@
 #include <Cool/OpenGL/SSBO.h>
 #include "Params/ColorParams.h"
 #include "Params/PhysicsParams.h"
+#include "Params/WindParams.h"
 #include "PoulpeBody.h"
 #include <Cool/FileWatcher/FileWatcher.h>
 
@@ -29,6 +30,7 @@ private:
 	int _current_nb_particles = 0;
 	PhysicsParams _physics_params;
 	ColorParams _color_params;
+	WindParams _wind_params;
 	PoulpeBody _poulpe;
 
 	Shader m_renderingShader;

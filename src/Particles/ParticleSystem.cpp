@@ -103,6 +103,12 @@ void ParticleSystem::update() {
     physicsShader().get().setUniform1f("_gravity", *_physics_params->gravity);
     physicsShader().get().setUniform2f("_mouse_pos", Input::MouseInNormalizedRatioSpace());
     physicsShader().get().setUniform1f("_time", Time::time());
+    // Wind
+    physicsShader().get().setUniform1f("_wind_noise_puls", *_wind_params->noise_puls);
+    physicsShader().get().setUniform1f("_wind_max_strength", *_wind_params->max_strength);
+    physicsShader().get().setUniform1f("_wind_min_strength", *_wind_params->min_strength);
+    physicsShader().get().setUniform1f("_wind_direction_angle", *_wind_params->direction_angle);
+    //physicsShader().get().setUniform2f("_wind_offset", *_wind_params->offset);
     //physicsShader().get().setUniform1f("_amplitude", _amplitude);
     //physicsShader().get().setUniform1f("_pulsation", _pulsation);
     glm::vec2 curr_pos = Input::MouseInNormalizedRatioSpace();
@@ -121,6 +127,9 @@ void ParticleSystem::ImGui() {
     ImGui::PopID();
     ImGui::PushID(322);
         _color_params.ImGui();
+    ImGui::PopID();
+    ImGui::PushID(322);
+    _wind_params.ImGui();
     ImGui::PopID();
 }
 

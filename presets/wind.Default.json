@@ -1,0 +1,22 @@
+{
+    "value0": {
+        "Values": {
+            "value0": {
+                "Pulsation": 2.24399995803833
+            },
+            "value1": {
+                "Min Strength": -5.0
+            },
+            "value2": {
+                "Max Strength": 5.0
+            },
+            "value3": {
+                "Direction": 42.73699951171875
+            },
+            "value4": {
+                "Offset": 5.0
+            }
+        },
+        "uuid": -132465442
+    }
+}
