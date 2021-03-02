@@ -17,6 +17,6 @@ private:
 	glm::vec2 _curr_mouse_position = glm::vec2(0.f);
 	glm::vec2 _prev_mouse_position = glm::vec2(0.f);
 	glm::vec2 _position = glm::vec2(0.f);
-	float _size = 0.8f;
+	float _size = 0.6f;
 	bool _is_held = false;
 };

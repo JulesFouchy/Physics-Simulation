@@ -76,6 +76,13 @@ ParticleSystem::~ParticleSystem() {
 void ParticleSystem::render() {
     glClearColor(_color_params->background->r, _color_params->background->g, _color_params->background->b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Particles
+    m_renderingShader.bind();
+    m_renderingShader.setUniform1f("_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
+    m_renderingShader.setUniform1f("_particle_size", *_physics_params->size);
+    m_renderingShader.setUniform1i("_bPingPong", _bPingPong);
+    m_renderingShader.setUniform1i("_nb_particles", *_physics_params->nb_particles);
+    GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, *_physics_params->nb_particles));
     // Poulpe
     _poulpe_shader.bind();
     _poulpe_shader.setUniform1f("_invAspectRatio", 1.f / RenderState::Size().aspectRatio());
@@ -84,13 +91,6 @@ void ParticleSystem::render() {
     _poulpe_shader.setUniform3f("_body_color", *_color_params->poulpe_body);
     _poulpe_shader.setUniform3f("_second_color", *_color_params->poulpe_elements);
     GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1));
-    // Particles
-    m_renderingShader.bind();
-    m_renderingShader.setUniform1f("_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
-    m_renderingShader.setUniform1f("_particle_size", *_physics_params->size);
-    m_renderingShader.setUniform1i("_bPingPong", _bPingPong);
-    m_renderingShader.setUniform1i("_nb_particles", *_physics_params->nb_particles);
-    GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, *_physics_params->nb_particles));
 }
 
 void ParticleSystem::update() {
@@ -135,8 +135,8 @@ void ParticleSystem::reset_pos_and_vel() {
         int id = i % nbPartPerTentacle;
         const float angle = base_angle + delta_angle * (i / nbPartPerTentacle);
         const float radius = _poulpe.size() - 0.075 + id * 0.01;
-        v[2 * i]     = radius * cos(angle);
-        v[2 * i + 1] = radius * sin(angle);
+        v[2 * i]     = radius * cos(angle) + _poulpe.position().x;
+        v[2 * i + 1] = radius * sin(angle) + _poulpe.position().y;
     }
     _bPingPong = true;
     m_pos1SSBO.uploadData(v);
