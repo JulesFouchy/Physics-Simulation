@@ -13,37 +13,19 @@ struct Vertex {
 };
 
 ParticleSystem::ParticleSystem()
-      : _physics_params([this]() {on_nb_particles_change(); }),
+      : _physics_params([this]() {on_nb_vertices_change(); }),
       _color_params([this]() {})
 {
     // Vertex array
     GLCall(glGenVertexArrays(1, &_vaoID));
     GLCall(glBindVertexArray(_vaoID));
-    // Vertex & Index buffer
+    // Vertex buffer
     GLCall(glGenBuffers(1, &_vboID));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, _vboID));
+    GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _vboID));
+    // Index buffer
     GLCall(glGenBuffers(1, &_iboID));
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _iboID));
-    std::vector<Vertex> vertices(_grid_width * _grid_height);
-    std::vector<unsigned int> indices; indices.reserve(nb_of_indices());
-    for (int y = 0; y < _grid_height; ++y) {
-        for (int x = 0; x < _grid_width; ++x) {
-            int idx = x + y * _grid_width;
-            // Index
-            if (x != _grid_width - 1 && y != _grid_height - 1) {
-                indices.push_back(idx);
-                indices.push_back(idx + _grid_width + 1);
-                indices.push_back(idx + _grid_width);
-
-                indices.push_back(idx);
-                indices.push_back(idx + 1);
-                indices.push_back(idx + _grid_width + 1);
-            }
-        }
-    }
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW));
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW));
-    GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _vboID));
     // Vertex Attribute pos
     GLCall(glEnableVertexAttribArray(0));
     GLCall(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, pos))));
@@ -51,21 +33,13 @@ ParticleSystem::ParticleSystem()
     GLCall(glEnableVertexAttribArray(1));
     GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex,  uv))));
     //
-    on_nb_particles_change();
+    on_nb_vertices_change();
 }
 
 ParticleSystem::~ParticleSystem() {
     GLCall(glDeleteBuffers(1, &_vboID));
     GLCall(glDeleteBuffers(1, &_iboID));
     GLCall(glDeleteVertexArrays(1, &_vaoID));
-}
-
-int ParticleSystem::nb_of_indices() {
-    return 6 * (_grid_width - 1) * (_grid_height - 1);
-}
-
-int ParticleSystem::nb_of_vertices() {
-    return _grid_width * _grid_height;
 }
 
 void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat) {
@@ -82,13 +56,28 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
 
 void ParticleSystem::init_vertices_and_indices() {
     // Vertices
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * nb_of_vertices(), nullptr, GL_STATIC_DRAW));
     _init_vertices_cs->bind();
     _init_vertices_cs->setUniform1i("_grid_width", _grid_width);
     _init_vertices_cs->setUniform1i("_grid_height", _grid_height);
     _init_vertices_cs.compute(nb_of_vertices());
     // Indices
-    _init_indices_cs->bind();
-    _init_indices_cs.compute(nb_of_indices());
+    std::vector<unsigned int> indices;
+    indices.reserve(nb_of_indices());
+    for (int y = 0; y < _grid_height - 1; ++y) {
+        for (int x = 0; x < _grid_width - 1; ++x) {
+            int idx = x + y * _grid_width;
+
+            indices.push_back(idx);
+            indices.push_back(idx + _grid_width + 1);
+            indices.push_back(idx + _grid_width);
+
+            indices.push_back(idx);
+            indices.push_back(idx + 1);
+            indices.push_back(idx + _grid_width + 1);
+        }
+    }
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW));
 }
 
 void ParticleSystem::reset_pos_and_vel() {
@@ -105,7 +94,7 @@ void ParticleSystem::update() {
     _update_physics_cs.compute(nb_of_vertices());
 }
 
-void ParticleSystem::on_nb_particles_change() {
+void ParticleSystem::on_nb_vertices_change() {
     init_vertices_and_indices();
     reset_pos_and_vel();
 }

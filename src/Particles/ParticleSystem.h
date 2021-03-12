@@ -23,10 +23,10 @@ public:
 	inline void onMouseMoveEvent(double xPos, double yPos) {}
 
 private:
-	void on_nb_particles_change();
+	void on_nb_vertices_change();
 
-	int nb_of_vertices();
-	int nb_of_indices();
+	inline int nb_of_vertices() { return _grid_width * _grid_height; }
+	inline int nb_of_indices() { return 6 * (_grid_width - 1) * (_grid_height - 1); }
 
 private:
 	PhysicsParams _physics_params;
@@ -40,7 +40,6 @@ private:
 	GLuint _iboID;
 	Shader _rendering_shader{ "shaders/particle.vert", "shaders/particle.frag" };
 	ComputeShader<256> _init_vertices_cs{ "shaders/init_vertices.comp" };
-	ComputeShader<256> _init_indices_cs{ "shaders/init_indices.comp" };
 	ComputeShader<256> _reset_pos_and_vel_cs{ "shaders/reset_pos_and_vel.comp" };
 	ComputeShader<256> _update_physics_cs{ "shaders/update_physics.comp" };
 
@@ -62,6 +61,6 @@ private:
 			cereal::make_nvp("Physics", _physics_params),
 			cereal::make_nvp("Color", _color_params)
 		);
-		on_nb_particles_change();
+		on_nb_vertices_change();
 	}
 };
