@@ -31,12 +31,13 @@ private:
 	ColorParams _color_params;
 	WindParams _wind_params;
 
-	Shader _rendering_shader;
+	int _grid_width = 10;
+	int _grid_height = 10;
 	GLuint _vaoID;
 	GLuint _vboID;
 	GLuint _iboID;
-	int _grid_width = 10;
-	int _grid_height = 10;
+	Shader _rendering_shader;
+	ComputeShader<256> _reset_pos_and_vel_cs;
 
 private:
 	//Serialization

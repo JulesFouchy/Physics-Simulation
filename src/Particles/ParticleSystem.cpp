@@ -15,7 +15,8 @@ struct Vertex {
 ParticleSystem::ParticleSystem()
     : _rendering_shader("shaders/particle.vert", "shaders/particle.frag"),
       _physics_params([this]() {on_nb_particles_change(); }),
-      _color_params([this]() {})
+      _color_params([this]() {}),
+      _reset_pos_and_vel_cs("shaders/reset_pos_and_vel.comp")
 {
     // Vertex array
     GLCall(glGenVertexArrays(1, &_vaoID));
@@ -31,12 +32,6 @@ ParticleSystem::ParticleSystem()
         for (int x = 0; x < _grid_width; ++x) {
             int idx = x + y * _grid_width;
             // Vertex
-            vertices[idx].pos = glm::vec4(
-                x / float(_grid_width - 1),
-                y / float(_grid_height - 1),
-                0.f,
-                1.f
-            );
             vertices[idx].uv = glm::vec2(
                 x / float(_grid_width - 1),
                 y / float(_grid_height - 1)
@@ -55,6 +50,7 @@ ParticleSystem::ParticleSystem()
     }
     GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW));
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW));
+    GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _vboID));
     // Vertex Attribute pos
     GLCall(glEnableVertexAttribArray(0));
     GLCall(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, pos))));
@@ -107,7 +103,10 @@ void ParticleSystem::ImGui() {
 }
 
 void ParticleSystem::reset_pos_and_vel() {
-
+    _reset_pos_and_vel_cs->bind();
+    _reset_pos_and_vel_cs->setUniform1i("_grid_width", _grid_width);
+    _reset_pos_and_vel_cs->setUniform1i("_grid_height", _grid_height);
+    _reset_pos_and_vel_cs.compute(_grid_width * _grid_height);
 }
 
 void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
