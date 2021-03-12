@@ -1,0 +1,14 @@
+//? #version 430
+
+uniform int _grid_width;
+uniform int _grid_height;
+
+layout (std140, binding = 1) buffer IndexBuffer {
+   unsigned int indices[];
+};
+
+void cool_main(){
+    int gid = int(gl_GlobalInvocationID.x);
+    int x = gid % _grid_width;
+    int y = gid / _grid_width;
+}

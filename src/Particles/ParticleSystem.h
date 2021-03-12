@@ -16,6 +16,7 @@ public:
 	void render(const glm::mat4& view_mat, const glm::mat4& proj_mat);
 	void update();
 	void ImGui();
+	void init_vertices_and_indices();
 	void reset_pos_and_vel();
 	
 	void onMouseButtonEvent(int button, int action, int mods);
@@ -24,8 +25,8 @@ public:
 private:
 	void on_nb_particles_change();
 
-	int nb_of_triangles();
 	int nb_of_vertices();
+	int nb_of_indices();
 
 private:
 	PhysicsParams _physics_params;
@@ -37,9 +38,11 @@ private:
 	GLuint _vaoID;
 	GLuint _vboID;
 	GLuint _iboID;
-	Shader _rendering_shader;
-	ComputeShader<256> _reset_pos_and_vel_cs;
-	ComputeShader<256> _update_physics_cs;
+	Shader _rendering_shader{ "shaders/particle.vert", "shaders/particle.frag" };
+	ComputeShader<256> _init_vertices_cs{ "shaders/init_vertices.comp" };
+	ComputeShader<256> _init_indices_cs{ "shaders/init_indices.comp" };
+	ComputeShader<256> _reset_pos_and_vel_cs{ "shaders/reset_pos_and_vel.comp" };
+	ComputeShader<256> _update_physics_cs{ "shaders/update_physics.comp" };
 
 private:
 	//Serialization

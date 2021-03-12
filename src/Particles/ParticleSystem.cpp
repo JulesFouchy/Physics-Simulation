@@ -13,11 +13,8 @@ struct Vertex {
 };
 
 ParticleSystem::ParticleSystem()
-    : _rendering_shader("shaders/particle.vert", "shaders/particle.frag"),
-      _physics_params([this]() {on_nb_particles_change(); }),
-      _color_params([this]() {}),
-      _reset_pos_and_vel_cs("shaders/reset_pos_and_vel.comp"),
-      _update_physics_cs("shaders/update_physics.comp")
+      : _physics_params([this]() {on_nb_particles_change(); }),
+      _color_params([this]() {})
 {
     // Vertex array
     GLCall(glGenVertexArrays(1, &_vaoID));
@@ -28,15 +25,10 @@ ParticleSystem::ParticleSystem()
     GLCall(glGenBuffers(1, &_iboID));
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _iboID));
     std::vector<Vertex> vertices(_grid_width * _grid_height);
-    std::vector<unsigned int> indices; indices.reserve(3 * nb_of_triangles());
+    std::vector<unsigned int> indices; indices.reserve(nb_of_indices());
     for (int y = 0; y < _grid_height; ++y) {
         for (int x = 0; x < _grid_width; ++x) {
             int idx = x + y * _grid_width;
-            // Vertex
-            vertices[idx].uv = glm::vec2(
-                x / float(_grid_width - 1),
-                y / float(_grid_height - 1)
-            );
             // Index
             if (x != _grid_width - 1 && y != _grid_height - 1) {
                 indices.push_back(idx);
@@ -62,18 +54,18 @@ ParticleSystem::ParticleSystem()
     on_nb_particles_change();
 }
 
-int ParticleSystem::nb_of_triangles() {
-    return 2 * (_grid_width - 1) * (_grid_height - 1);
-}
-
-int ParticleSystem::nb_of_vertices() {
-    return _grid_width * _grid_height;
-}
-
 ParticleSystem::~ParticleSystem() {
     GLCall(glDeleteBuffers(1, &_vboID));
     GLCall(glDeleteBuffers(1, &_iboID));
     GLCall(glDeleteVertexArrays(1, &_vaoID));
+}
+
+int ParticleSystem::nb_of_indices() {
+    return 6 * (_grid_width - 1) * (_grid_height - 1);
+}
+
+int ParticleSystem::nb_of_vertices() {
+    return _grid_width * _grid_height;
 }
 
 void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat) {
@@ -85,7 +77,18 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
     _rendering_shader.setUniformMat4f("_view_mat", view_mat);
     _rendering_shader.setUniformMat4f("_proj_mat", proj_mat);
     GLCall(glBindVertexArray(_vaoID));
-    GLCall(glDrawElements(GL_TRIANGLES, 3 * nb_of_triangles(), GL_UNSIGNED_INT, 0));
+    GLCall(glDrawElements(GL_TRIANGLES, nb_of_indices(), GL_UNSIGNED_INT, 0));
+}
+
+void ParticleSystem::init_vertices_and_indices() {
+    // Vertices
+    _init_vertices_cs->bind();
+    _init_vertices_cs->setUniform1i("_grid_width", _grid_width);
+    _init_vertices_cs->setUniform1i("_grid_height", _grid_height);
+    _init_vertices_cs.compute(nb_of_vertices());
+    // Indices
+    _init_indices_cs->bind();
+    _init_indices_cs.compute(nb_of_indices());
 }
 
 void ParticleSystem::reset_pos_and_vel() {
@@ -103,6 +106,7 @@ void ParticleSystem::update() {
 }
 
 void ParticleSystem::on_nb_particles_change() {
+    init_vertices_and_indices();
     reset_pos_and_vel();
 }
 
