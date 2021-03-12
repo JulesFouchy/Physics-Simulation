@@ -46,6 +46,12 @@ void ParticleSystem::update() {
     _update_physics_cs->bind();
     _update_physics_cs->setUniform1i("_grid_width", _grid_width);
     _update_physics_cs->setUniform1i("_grid_height", _grid_height);
+    _update_physics_cs->setUniform1f("_dt", Time::deltaTime());    
+    _update_physics_cs->setUniform1f("_stiffness", *_physics_params->stiffness);
+    _update_physics_cs->setUniform1f("_internal_damping", *_physics_params->internal_damping);
+    _update_physics_cs->setUniform1f("_external_damping", *_physics_params->external_damping);
+    _update_physics_cs->setUniform1f("_gravity", *_physics_params->gravity);
+
     _update_physics_cs.compute(nb_of_vertices());
 }
 

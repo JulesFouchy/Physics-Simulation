@@ -1,7 +1,14 @@
 //? #version 430
 
+//? uniform int NumberOfComputationsX;
 uniform int _grid_width;
 uniform int _grid_height;
+
+uniform float _dt;
+uniform float _stiffness;
+uniform float _internal_damping;
+uniform float _external_damping;
+uniform float _gravity;
 
 struct Vertex {
    vec4 pos;
@@ -22,9 +29,46 @@ layout (std140, binding = 1) buffer VelocitiesBuffer {
    Velocity velocities[];
 };
 
+vec3 interact_with(int x_off, int y_off) {
+    float stiffness = _stiffness / _dt / _dt / 3600.f * NumberOfComputationsX;
+    float internal_damping = _internal_damping / _dt / 60.f * NumberOfComputationsX / 100.f;
+    float external_damping = _external_damping / _dt / 60.f * NumberOfComputationsX / 100.f;
+
+    int gid1 = int(gl_GlobalInvocationID.x);
+    int x1 = gid1 % _grid_width;
+    int y1 = gid1 / _grid_width;
+    int x2 = x1 + x_off;
+    int y2 = y1 + y_off;
+    int gid2 = x2 + y2 * _grid_width;
+
+    if (x2 >= 0 && x2 < _grid_width && y2 >= 0 && y2 < _grid_height) {
+        vec3 dir = vertices[gid1].pos.xyz - vertices[gid2].pos.xyz;
+        return 
+            - dir * stiffness
+            - (velocities[gid1].vel - velocities[gid2].vel) * internal_damping
+            - velocities[gid1].vel * external_damping
+            + vec3(0., -_gravity, 0.)
+        ;
+    }
+    else {
+        return vec3(0.);
+    };
+}
+
 void cool_main(){
     int gid = int(gl_GlobalInvocationID.x);
     int x = gid % _grid_width;
     int y = gid / _grid_width;
-    vertices[gid].pos.xyz += velocities[gid].vel;
+
+    if (x != _grid_width-1 && y != 0) {
+        vec3 acc =
+            interact_with(+1, 0) +
+            interact_with(-1, 0) +
+            interact_with(0, +1) +
+            interact_with(0, -1);
+
+        // Leapfrog update of vel and pos
+        velocities[gid].vel += acc * _dt;
+        vertices[gid].pos.xyz += velocities[gid].vel * _dt;
+    }
 }

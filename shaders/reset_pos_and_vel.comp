@@ -28,9 +28,9 @@ void cool_main(){
     int y = gid / _grid_width;
     // Pos
     vertices[gid].pos = vec4(
+        0.,
         x / float(_grid_width - 1),
         y / float(_grid_height - 1),
-        0.,
         1.
     );
     // Vel
