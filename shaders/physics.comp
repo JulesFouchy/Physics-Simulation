@@ -43,45 +43,32 @@ layout(std430, binding=4) buffer heldParticle {
 };
 
 void cool_main(){
+    float stiffness = _stiffness / _dt / _dt / 3600.f * NumberOfComputationsX;
+    float internal_damping = _internal_damping / _dt / 60.f * NumberOfComputationsX / 100.f;
+    float external_damping = _external_damping / _dt / 60.f * NumberOfComputationsX / 100.f;
+
     uint gid = gl_GlobalInvocationID.x;
     if (gid != heldPart[0]) {
-        uint nbPartPerTentacle = (NumberOfComputationsX-1) / 8 +1;
-        uint ggid = gid % nbPartPerTentacle;
-        if (ggid > 0 && ggid < nbPartPerTentacle - 1 && gid < NumberOfComputationsX - 1) {
+        if (gid != 0 && gid != NumberOfComputationsX - 1) {
             vec2 dirL = partPosIN[gid] - partPosIN[gid - 1];
             vec2 dirR = partPosIN[gid] - partPosIN[gid + 1];
-            vec2 acc = 
-                - (dirL + dirR) * _stiffness * nbPartPerTentacle  // Spring attraction
-                - (partVel[gid] - 0.5 * (partVel[gid+1] + partVel[gid-1])) * _internal_damping
-                - partVel[gid] * _external_damping
+            vec2 acc =
+                - (dirL + dirR) * stiffness  // Spring attraction
+                - (partVel[gid] - 0.5 * (partVel[gid+1] + partVel[gid-1])) * internal_damping
+                - partVel[gid] * external_damping
                 + vec2(0., -_gravity)         // Gravity
             ;
             // wind
-            float agl = _wind_direction_angle + 6.28*0.1 * snoise(_wind_noise_puls * partPosIN[gid] + _time + 123.4567);
-            float strength = 0.5 + 0.5 * snoise(_wind_noise_puls * partPosIN[gid]+ _time);
-            strength = strength * (_wind_max_strength - _wind_min_strength) + _wind_min_strength;
-            acc += strength * vec2(cos(agl), sin(agl));
+            // float agl = _wind_direction_angle + 6.28*0.1 * snoise(_wind_noise_puls * partPosIN[gid] + _time + 123.4567);
+            // float strength = 0.5 + 0.5 * snoise(_wind_noise_puls * partPosIN[gid]+ _time);
+            // strength = strength * (_wind_max_strength - _wind_min_strength) + _wind_min_strength;
+            // acc += strength * vec2(cos(agl), sin(agl));
             // apply
             partVel[gid] += acc * _dt;
             partPosOUT[gid] = partPosIN[gid] + partVel[gid] * _dt;
-        }
-        else if (ggid == 0) {
-            partPosOUT[gid] = _body_delta + vec2(
-                partPosIN[gid].x,
-                partPosIN[gid].y//_amplitude * sin(_time * _pulsation)
-            );
         }
         else {
-            vec2 dirL = partPosIN[gid] - partPosIN[gid - 1];
-            vec2 acc = 
-                - (dirL) * _stiffness * nbPartPerTentacle  // Spring attraction
-                - (partVel[gid] - partVel[gid-1]) * _internal_damping
-                - partVel[gid] * _external_damping
-                + vec2(0., -_gravity)         // Gravity
-            ;
-            // apply
-            partVel[gid] += acc * _dt;
-            partPosOUT[gid] = partPosIN[gid] + partVel[gid] * _dt;
+            partPosOUT[gid] = partPosIN[gid];
         }
     }
     else {

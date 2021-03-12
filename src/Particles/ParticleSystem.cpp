@@ -84,13 +84,13 @@ void ParticleSystem::render() {
     m_renderingShader.setUniform1i("_nb_particles", *_physics_params->nb_particles);
     GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, *_physics_params->nb_particles));
     // Poulpe
-    _poulpe_shader.bind();
-    _poulpe_shader.setUniform1f("_invAspectRatio", 1.f / RenderState::Size().aspectRatio());
-    _poulpe_shader.setUniform1f("_size", _poulpe.size());
-    _poulpe_shader.setUniform2f("_position", _poulpe.position());
-    _poulpe_shader.setUniform3f("_body_color", *_color_params->poulpe_body);
-    _poulpe_shader.setUniform3f("_second_color", *_color_params->poulpe_elements);
-    GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1));
+    //_poulpe_shader.bind();
+    //_poulpe_shader.setUniform1f("_invAspectRatio", 1.f / RenderState::Size().aspectRatio());
+    //_poulpe_shader.setUniform1f("_size", _poulpe.size());
+    //_poulpe_shader.setUniform2f("_position", _poulpe.position());
+    //_poulpe_shader.setUniform3f("_body_color", *_color_params->poulpe_body);
+    //_poulpe_shader.setUniform3f("_second_color", *_color_params->poulpe_elements);
+    //GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 1));
 }
 
 void ParticleSystem::update() {
@@ -140,12 +140,8 @@ void ParticleSystem::reset_pos_and_vel() {
     constexpr float delta_angle = 0.48 * TAU / 8;
     constexpr float base_angle = -TAU / 4 - 3.5 * delta_angle;
     for (int i = 0; i < N; ++i) {
-        int nbPartPerTentacle = (N - 1) / 8 + 1;
-        int id = i % nbPartPerTentacle;
-        const float angle = base_angle + delta_angle * (i / nbPartPerTentacle);
-        const float radius = _poulpe.size() - 0.075 + id * 0.01;
-        v[2 * i]     = radius * cos(angle) + _poulpe.position().x;
-        v[2 * i + 1] = radius * sin(angle) + _poulpe.position().y;
+        v[2 * i]     = float(i) / N * 2.f - 1.f;
+        v[2 * i + 1] = 0.;
     }
     _bPingPong = true;
     m_pos1SSBO.uploadData(v);
