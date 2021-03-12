@@ -25,6 +25,7 @@ private:
 	void on_nb_particles_change();
 
 	int nb_of_triangles();
+	int nb_of_vertices();
 
 private:
 	PhysicsParams _physics_params;
@@ -38,6 +39,7 @@ private:
 	GLuint _iboID;
 	Shader _rendering_shader;
 	ComputeShader<256> _reset_pos_and_vel_cs;
+	ComputeShader<256> _update_physics_cs;
 
 private:
 	//Serialization

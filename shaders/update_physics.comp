@@ -1,0 +1,21 @@
+//? #version 430
+
+uniform int _grid_width;
+uniform int _grid_height;
+
+struct Vertex {
+   vec4 pos;
+   vec2 uv;
+   vec2 _padding;
+};  
+
+layout (std140, binding = 0) buffer VertexBuffer {
+   Vertex vertices[];
+};
+
+void cool_main(){
+    int gid = int(gl_GlobalInvocationID.x);
+    int x = gid % _grid_width;
+    int y = gid / _grid_width;
+    vertices[gid].pos.x += 0.01;
+}

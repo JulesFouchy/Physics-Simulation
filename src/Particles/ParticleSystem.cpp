@@ -16,7 +16,8 @@ ParticleSystem::ParticleSystem()
     : _rendering_shader("shaders/particle.vert", "shaders/particle.frag"),
       _physics_params([this]() {on_nb_particles_change(); }),
       _color_params([this]() {}),
-      _reset_pos_and_vel_cs("shaders/reset_pos_and_vel.comp")
+      _reset_pos_and_vel_cs("shaders/reset_pos_and_vel.comp"),
+      _update_physics_cs("shaders/update_physics.comp")
 {
     // Vertex array
     GLCall(glGenVertexArrays(1, &_vaoID));
@@ -65,6 +66,10 @@ int ParticleSystem::nb_of_triangles() {
     return 2 * (_grid_width - 1) * (_grid_height - 1);
 }
 
+int ParticleSystem::nb_of_vertices() {
+    return _grid_width * _grid_height;
+}
+
 ParticleSystem::~ParticleSystem() {
     GLCall(glDeleteBuffers(1, &_vboID));
     GLCall(glDeleteBuffers(1, &_iboID));
@@ -83,8 +88,22 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
     GLCall(glDrawElements(GL_TRIANGLES, 3 * nb_of_triangles(), GL_UNSIGNED_INT, 0));
 }
 
-void ParticleSystem::update() {
+void ParticleSystem::reset_pos_and_vel() {
+    _reset_pos_and_vel_cs->bind();
+    _reset_pos_and_vel_cs->setUniform1i("_grid_width", _grid_width);
+    _reset_pos_and_vel_cs->setUniform1i("_grid_height", _grid_height);
+    _reset_pos_and_vel_cs.compute(nb_of_vertices());
+}
 
+void ParticleSystem::update() {
+    _update_physics_cs->bind();
+    _update_physics_cs->setUniform1i("_grid_width", _grid_width);
+    _update_physics_cs->setUniform1i("_grid_height", _grid_height);
+    _update_physics_cs.compute(nb_of_vertices());
+}
+
+void ParticleSystem::on_nb_particles_change() {
+    reset_pos_and_vel();
 }
 
 void ParticleSystem::ImGui() {
@@ -102,17 +121,6 @@ void ParticleSystem::ImGui() {
     ImGui::PopID();
 }
 
-void ParticleSystem::reset_pos_and_vel() {
-    _reset_pos_and_vel_cs->bind();
-    _reset_pos_and_vel_cs->setUniform1i("_grid_width", _grid_width);
-    _reset_pos_and_vel_cs->setUniform1i("_grid_height", _grid_height);
-    _reset_pos_and_vel_cs.compute(_grid_width * _grid_height);
-}
-
 void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {
 
-}
-
-void ParticleSystem::on_nb_particles_change() {
-    reset_pos_and_vel();
 }
