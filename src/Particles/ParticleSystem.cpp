@@ -6,6 +6,12 @@
 #include <Cool/String/String.h>
 #include <Cool/App/Input.h>
 
+struct Vertex {
+    glm::vec4 pos;
+    glm::vec2 uv;
+    glm::vec2 _padding;
+};
+
 ParticleSystem::ParticleSystem()
     : m_renderingShader("shaders/particle.vert", "shaders/particle.frag"),
       _poulpe_shader("shaders/poulpe.vert", "shaders/poulpe.frag"),
@@ -35,30 +41,55 @@ ParticleSystem::ParticleSystem()
     m_physicsShaderFrom1to2.createProgramFromCode(physicsShaderSrc12);
     m_physicsShaderFrom2to1.createProgramFromCode(physicsShaderSrc21);
     // Vertex array
-    GLCall(glGenVertexArrays(1, &m_vaoID));
-    GLCall(glBindVertexArray(m_vaoID));
-    // Vertex buffer
-    GLCall(glGenBuffers(1, &m_vboID));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_vboID));
-    float vertices[] = {
-        //   pos        uv
-        -1.f, -1.f,  0.f, 0.f,
-         1.f, -1.f,  1.f, 0.f,
-         1.f,  1.f,  1.f, 1.f,
+    GLCall(glGenVertexArrays(1, &_vaoID));
+    GLCall(glBindVertexArray(_vaoID));
+    // Vertex & Index buffer
+    GLCall(glGenBuffers(1, &_vboID));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, _vboID));
+    GLCall(glGenBuffers(1, &_iboID));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _iboID));
+    std::vector<Vertex> vertices(_grid_width * _grid_height);
+    std::vector<unsigned int> indices; indices.reserve(3 * nb_of_triangles());
+    for (int y = 0; y < _grid_height; ++y) {
+        for (int x = 0; x < _grid_width; ++x) {
+            int idx = x + y * _grid_width;
+            // Vertex
+            vertices[idx].pos = glm::vec4(
+                x / float(_grid_width - 1),
+                y / float(_grid_height - 1),
+                0.f,
+                1.f
+            );
+            vertices[idx].uv = glm::vec2(
+                x / float(_grid_width - 1),
+                y / float(_grid_height - 1)
+            );
+            // Index
+            if (x != _grid_width - 1 && y != _grid_height - 1) {
+                indices.push_back(idx);
+                indices.push_back(idx + _grid_width + 1);
+                indices.push_back(idx + _grid_width);
 
-        -1.f, -1.f,  0.f, 0.f,
-         1.f,  1.f,  1.f, 1.f,
-        -1.f,  1.f,  0.f, 1.f
-    };
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
+                indices.push_back(idx);
+                indices.push_back(idx + 1);
+                indices.push_back(idx + _grid_width + 1);
+            }
+        }
+    }
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW));
     // Vertex Attribute pos
     GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0));
+    GLCall(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, pos))));
     // Vertex Attribute uv
     GLCall(glEnableVertexAttribArray(1));
-    GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float))));
+    GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex,  uv))));
     //
     on_nb_particles_change();
+}
+
+int ParticleSystem::nb_of_triangles() {
+    return 2 * (_grid_width - 1) * (_grid_height - 1);
 }
 
 void ParticleSystem::on_color_gradient_change() {
@@ -69,8 +100,9 @@ void ParticleSystem::on_color_gradient_change() {
 }
 
 ParticleSystem::~ParticleSystem() {
-    GLCall(glDeleteBuffers(1, &m_vboID));
-    GLCall(glDeleteVertexArrays(1, &m_vaoID));
+    GLCall(glDeleteBuffers(1, &_vboID));
+    GLCall(glDeleteBuffers(1, &_iboID));
+    GLCall(glDeleteVertexArrays(1, &_vaoID));
 }
 
 void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat) {
@@ -78,11 +110,10 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Particles
     m_renderingShader.bind();
-    m_renderingShader.setUniform1f("_invAspectRatio", 1.f/RenderState::Size().aspectRatio());
-    m_renderingShader.setUniform1f("_particle_size", *_physics_params->size);
-    m_renderingShader.setUniform1i("_bPingPong", _bPingPong);
-    m_renderingShader.setUniform1i("_nb_particles", *_physics_params->nb_particles);
-    GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, 6, *_physics_params->nb_particles));
+    m_renderingShader.setUniformMat4f("_view_mat", view_mat);
+    m_renderingShader.setUniformMat4f("_proj_mat", proj_mat);
+    GLCall(glBindVertexArray(_vaoID));
+    GLCall(glDrawElements(GL_TRIANGLES, 3 * nb_of_triangles(), GL_UNSIGNED_INT, 0));
     // Poulpe
     //_poulpe_shader.bind();
     //_poulpe_shader.setUniform1f("_invAspectRatio", 1.f / RenderState::Size().aspectRatio());

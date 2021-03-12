@@ -26,6 +26,8 @@ private:
 	inline ComputeShader<256>& physicsShader() { return _bPingPong ? m_physicsShaderFrom1to2 : m_physicsShaderFrom2to1; }
 	void on_color_gradient_change();
 
+	int nb_of_triangles();
+
 private:
 	int _current_nb_particles = 0;
 	PhysicsParams _physics_params;
@@ -47,8 +49,11 @@ private:
 	ComputeShader<256> _check_held_particle_shader;
 	ComputeShader<256> _compute_color_gradient_shader;
 	ComputeShader<256> m_hueGradientComputeShader;
-	GLuint m_vaoID;
-	GLuint m_vboID;
+	GLuint _vaoID;
+	GLuint _vboID;
+	GLuint _iboID;
+	int _grid_width = 10;
+	int _grid_height = 10;
 	FileWatcher _poulpe_watcher;
 
 private:
