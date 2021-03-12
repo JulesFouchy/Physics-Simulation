@@ -21,6 +21,7 @@ set(COOL_MODULES
     ImGui
     History
     FileWatcher
+    Camera
 )
 
 # Set the path where all the Cool modules are stored. It is required by all the Cool IncludeMe.cmake files

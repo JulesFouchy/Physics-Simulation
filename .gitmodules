@@ -40,3 +40,6 @@
 [submodule "Cool/FileWatcher"]
 	path = Cool/FileWatcher
 	url = https://github.com/CoolLibs/FileWatcher
+[submodule "Cool/Camera"]
+	path = Cool/Camera
+	url = https://github.com/CoolLibs/Camera/

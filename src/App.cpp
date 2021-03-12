@@ -25,11 +25,12 @@ void App::update() {
 	render();
 	Time::Update();
 	m_particle_system.update();
+	_camera.update();
 }
 
 void App::render() {
 	m_renderer.begin();
-	m_particle_system.render();
+	m_particle_system.render(_camera.viewMatrix(), _camera.projMatrix());
 	m_renderer.end();
 }
 
@@ -87,12 +88,18 @@ void App::onKeyboardEvent(int key, int scancode, int action, int mods) {
 void App::onMouseButtonEvent(int button, int action, int mods) {
 	if (!RenderState::IsExporting() && !ImGui::GetIO().WantCaptureMouse) {
 		m_particle_system.onMouseButtonEvent(button, action, mods);
+		if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+			if (action == GLFW_PRESS)
+				_camera.onWheelDown(mods);
+			else if (action == GLFW_RELEASE)
+				_camera.onWheelUp();
+		}
 	}
 }
 
 void App::onScrollEvent(double xOffset, double yOffset) {
 	if (!RenderState::IsExporting() && !ImGui::GetIO().WantCaptureMouse) {
-
+		_camera.onWheelScroll(yOffset);
 	}
 }
 

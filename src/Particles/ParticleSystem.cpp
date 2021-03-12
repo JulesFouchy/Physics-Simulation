@@ -73,7 +73,7 @@ ParticleSystem::~ParticleSystem() {
     GLCall(glDeleteVertexArrays(1, &m_vaoID));
 }
 
-void ParticleSystem::render() {
+void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat) {
     glClearColor(_color_params->background->r, _color_params->background->g, _color_params->background->b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Particles

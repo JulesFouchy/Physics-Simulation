@@ -13,7 +13,7 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 
-	void render();
+	void render(const glm::mat4& view_mat, const glm::mat4& proj_mat);
 	void update();
 	void ImGui();
 	void reset_pos_and_vel();
