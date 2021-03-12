@@ -44,13 +44,13 @@ ParticleSystem::~ParticleSystem() {
 
 void ParticleSystem::update() {
     _update_physics_cs->bind();
-    _update_physics_cs->setUniform1i("_grid_width", _grid_width);
-    _update_physics_cs->setUniform1i("_grid_height", _grid_height);
-    _update_physics_cs->setUniform1f("_dt", Time::deltaTime());    
-    _update_physics_cs->setUniform1f("_stiffness", *_physics_params->stiffness);
-    _update_physics_cs->setUniform1f("_internal_damping", *_physics_params->internal_damping);
-    _update_physics_cs->setUniform1f("_external_damping", *_physics_params->external_damping);
-    _update_physics_cs->setUniform1f("_gravity", *_physics_params->gravity);
+    _update_physics_cs->setUniform("_grid_width", _grid_width);
+    _update_physics_cs->setUniform("_grid_height", _grid_height);
+    _update_physics_cs->setUniform("_dt", Time::deltaTime());    
+    _update_physics_cs->setUniform("_stiffness", *_physics_params->stiffness);
+    _update_physics_cs->setUniform("_internal_damping", *_physics_params->internal_damping);
+    _update_physics_cs->setUniform("_external_damping", *_physics_params->external_damping);
+    _update_physics_cs->setUniform("_gravity", *_physics_params->gravity);
 
     _update_physics_cs.compute(nb_of_vertices());
 }
@@ -61,8 +61,8 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Mesh
     _rendering_shader.bind();
-    _rendering_shader.setUniformMat4f("_view_mat", view_mat);
-    _rendering_shader.setUniformMat4f("_proj_mat", proj_mat);
+    _rendering_shader.setUniform("_view_mat", view_mat);
+    _rendering_shader.setUniform("_proj_mat", proj_mat);
     GLCall(glBindVertexArray(_vaoID));
     GLCall(glDrawElements(GL_TRIANGLES, nb_of_indices(), GL_UNSIGNED_INT, 0));
 }
@@ -71,8 +71,8 @@ void ParticleSystem::on_nb_vertices_change() {
     // Vertex buffer
     GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * nb_of_vertices(), nullptr, GL_STATIC_DRAW));
     _init_vertices_cs->bind();
-    _init_vertices_cs->setUniform1i("_grid_width", _grid_width);
-    _init_vertices_cs->setUniform1i("_grid_height", _grid_height);
+    _init_vertices_cs->setUniform("_grid_width", _grid_width);
+    _init_vertices_cs->setUniform("_grid_height", _grid_height);
     _init_vertices_cs.compute(nb_of_vertices());
     // Index buffer
     std::vector<unsigned int> indices;
@@ -99,8 +99,8 @@ void ParticleSystem::on_nb_vertices_change() {
 
 void ParticleSystem::reset_pos_and_vel() {
     _reset_pos_and_vel_cs->bind();
-    _reset_pos_and_vel_cs->setUniform1i("_grid_width", _grid_width);
-    _reset_pos_and_vel_cs->setUniform1i("_grid_height", _grid_height);
+    _reset_pos_and_vel_cs->setUniform("_grid_width", _grid_width);
+    _reset_pos_and_vel_cs->setUniform("_grid_height", _grid_height);
     _reset_pos_and_vel_cs.compute(nb_of_vertices());
 }
 
