@@ -29,9 +29,9 @@ layout (std140, binding = 1) buffer VelocitiesBuffer {
    Velocity velocities[];
 };
 
-vec3 interact_with(int x_off, int y_off) {
-    float stiffness = _stiffness / _dt / _dt / 3600.f * NumberOfComputationsX;
-    float internal_damping = _internal_damping / _dt / 60.f * NumberOfComputationsX / 100.f;
+vec3 interact_with(int x_off, int y_off, float strength) {
+    float stiffness = strength * _stiffness / _dt / _dt / 3600.f * NumberOfComputationsX;
+    float internal_damping = strength * _internal_damping / _dt / 60.f * NumberOfComputationsX / 100.f;
 
     int gid1 = int(gl_GlobalInvocationID.x);
     int x1 = gid1 % _grid_width;
@@ -60,10 +60,14 @@ void cool_main(){
 
     if (x != _grid_width-1 && y != 0) {
         vec3 acc =
-            interact_with(+1, 0) +
-            interact_with(-1, 0) +
-            interact_with(0, +1) +
-            interact_with(0, -1) +
+            interact_with(+1,  0, 1.) +
+            interact_with(-1,  0, 1.) +
+            interact_with( 0, +1, 1.) +
+            interact_with( 0, -1, 1.) +
+            interact_with(+1, -1, 0.5) +
+            interact_with(-1, -1, 0.5) +
+            interact_with(+1, +1, 0.5) +
+            interact_with(-1, +1, 0.5) +
             (- velocities[gid].vel * external_damping) +
             vec3(0., -_gravity, 0.);
 
