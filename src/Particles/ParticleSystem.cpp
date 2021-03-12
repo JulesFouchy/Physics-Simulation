@@ -42,11 +42,18 @@ ParticleSystem::~ParticleSystem() {
     GLCall(glDeleteVertexArrays(1, &_vaoID));
 }
 
+void ParticleSystem::update() {
+    _update_physics_cs->bind();
+    _update_physics_cs->setUniform1i("_grid_width", _grid_width);
+    _update_physics_cs->setUniform1i("_grid_height", _grid_height);
+    _update_physics_cs.compute(nb_of_vertices());
+}
+
 void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat) {
     // Background
     glClearColor(_color_params->background->r, _color_params->background->g, _color_params->background->b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Particles
+    // Mesh
     _rendering_shader.bind();
     _rendering_shader.setUniformMat4f("_view_mat", view_mat);
     _rendering_shader.setUniformMat4f("_proj_mat", proj_mat);
@@ -85,13 +92,6 @@ void ParticleSystem::reset_pos_and_vel() {
     _reset_pos_and_vel_cs->setUniform1i("_grid_width", _grid_width);
     _reset_pos_and_vel_cs->setUniform1i("_grid_height", _grid_height);
     _reset_pos_and_vel_cs.compute(nb_of_vertices());
-}
-
-void ParticleSystem::update() {
-    _update_physics_cs->bind();
-    _update_physics_cs->setUniform1i("_grid_width", _grid_width);
-    _update_physics_cs->setUniform1i("_grid_height", _grid_height);
-    _update_physics_cs.compute(nb_of_vertices());
 }
 
 void ParticleSystem::on_nb_vertices_change() {
