@@ -61,14 +61,14 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
     GLCall(glDrawElements(GL_TRIANGLES, nb_of_indices(), GL_UNSIGNED_INT, 0));
 }
 
-void ParticleSystem::init_vertices_and_indices() {
-    // Vertices
+void ParticleSystem::on_nb_vertices_change() {
+    // Vertex buffer
     GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * nb_of_vertices(), nullptr, GL_STATIC_DRAW));
     _init_vertices_cs->bind();
     _init_vertices_cs->setUniform1i("_grid_width", _grid_width);
     _init_vertices_cs->setUniform1i("_grid_height", _grid_height);
     _init_vertices_cs.compute(nb_of_vertices());
-    // Indices
+    // Index buffer
     std::vector<unsigned int> indices;
     indices.reserve(nb_of_indices());
     for (int y = 0; y < _grid_height - 1; ++y) {
@@ -85,6 +85,10 @@ void ParticleSystem::init_vertices_and_indices() {
         }
     }
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW));
+    // Velocities SSBO
+    _vel_ssbo.uploadData(4 * nb_of_vertices(), nullptr);
+    //
+    reset_pos_and_vel();
 }
 
 void ParticleSystem::reset_pos_and_vel() {
@@ -92,11 +96,6 @@ void ParticleSystem::reset_pos_and_vel() {
     _reset_pos_and_vel_cs->setUniform1i("_grid_width", _grid_width);
     _reset_pos_and_vel_cs->setUniform1i("_grid_height", _grid_height);
     _reset_pos_and_vel_cs.compute(nb_of_vertices());
-}
-
-void ParticleSystem::on_nb_vertices_change() {
-    init_vertices_and_indices();
-    reset_pos_and_vel();
 }
 
 void ParticleSystem::ImGui() {

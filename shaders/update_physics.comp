@@ -7,15 +7,24 @@ struct Vertex {
    vec4 pos;
    vec2 uv;
    vec2 _padding;
-};  
+};
+
+struct Velocity {
+    vec3 vel;
+    float _padding;
+};
 
 layout (std140, binding = 0) buffer VertexBuffer {
    Vertex vertices[];
+};
+
+layout (std140, binding = 1) buffer VelocitiesBuffer {
+   Velocity velocities[];
 };
 
 void cool_main(){
     int gid = int(gl_GlobalInvocationID.x);
     int x = gid % _grid_width;
     int y = gid / _grid_width;
-    vertices[gid].pos.x += 0.01;
+    vertices[gid].pos.xyz += velocities[gid].vel;
 }
