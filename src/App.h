@@ -3,6 +3,7 @@
 #include <Cool/App/IApp.h>
 #include <Cool/App/OpenGLWindow.h>
 #include <Cool/Renderer_Fullscreen/Renderer_Fullscreen.h>
+#include <Cool/Exporter/Exporter.h>
 #include <Cool/Camera/Camera.h>
 
 #include "Particles/ParticleSystem.h"
@@ -29,6 +30,7 @@ private:
 	OpenGLWindow& m_mainWindow;
 	glm::vec3 m_bgColor = glm::vec3(0.478f, 0.674f, 0.792f);
 	Renderer_Fullscreen m_renderer;
+	Exporter _exporter;
 	ParticleSystem m_particle_system;
 	Camera _camera;
 #ifndef NDEBUG

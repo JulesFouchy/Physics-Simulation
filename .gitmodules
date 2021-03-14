@@ -43,3 +43,9 @@
 [submodule "Cool/Camera"]
 	path = Cool/Camera
 	url = https://github.com/CoolLibs/Camera/
+[submodule "Cool/ExportImage"]
+	path = Cool/ExportImage
+	url = https://github.com/CoolLibs/ExportImage
+[submodule "Cool/Exporter"]
+	path = Cool/Exporter
+	url = https://github.com/CoolLibs/Exporter

@@ -26,6 +26,7 @@ void App::update() {
 	Time::Update();
 	m_particle_system.update();
 	_camera.update();
+	_exporter.update(m_renderer.renderBuffer());
 }
 
 void App::render() {
@@ -39,7 +40,10 @@ void App::ImGuiWindows() {
 	ImGui::Begin("Particle System");
 	m_particle_system.ImGui();
 	ImGui::End();
-	//
+	// Exporter
+	_exporter.ImGuiExportImageWindow();
+	_exporter.ImGuiExportImageSequenceWindow();
+	// Debug
 #ifndef NDEBUG
 	if (m_bShow_Debug) {
 		ImGui::Begin("Debug", &m_bShow_Debug);
@@ -70,6 +74,10 @@ void App::ImGuiMenus() {
 		ImGui::Separator();
 		ImGui::Checkbox("Debug", &m_bShow_Debug);
 #endif
+		ImGui::EndMenu();
+	}
+	if (ImGui::BeginMenu("Export")) {
+		_exporter.ImGuiMenuItems();
 		ImGui::EndMenu();
 	}
 }
