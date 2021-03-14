@@ -49,3 +49,6 @@
 [submodule "Cool/Exporter"]
 	path = Cool/Exporter
 	url = https://github.com/CoolLibs/Exporter
+[submodule "Cool/MultiThread"]
+	path = Cool/MultiThread
+	url = https://github.com/CoolLibs/MultiThread

@@ -24,6 +24,7 @@ set(COOL_MODULES
     Camera
     ExportImage
     Exporter
+    MultiThread
 )
 
 # Set the path where all the Cool modules are stored. It is required by all the Cool IncludeMe.cmake files

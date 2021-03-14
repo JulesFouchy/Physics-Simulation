@@ -41,8 +41,8 @@ void App::ImGuiWindows() {
 	m_particle_system.ImGui();
 	ImGui::End();
 	// Exporter
-	_exporter.ImGuiExportImageWindow();
-	_exporter.ImGuiExportImageSequenceWindow();
+	_exporter.ImGui_window_export_image([this]() {render(); }, m_renderer.renderBuffer());
+	_exporter.ImGui_window_export_image_sequence();
 	// Debug
 #ifndef NDEBUG
 	if (m_bShow_Debug) {
@@ -77,7 +77,7 @@ void App::ImGuiMenus() {
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Export")) {
-		_exporter.ImGuiMenuItems();
+		_exporter.ImGui_menu_items();
 		ImGui::EndMenu();
 	}
 }
