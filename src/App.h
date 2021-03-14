@@ -33,6 +33,7 @@ private:
 	Exporter _exporter;
 	ParticleSystem m_particle_system;
 	Camera _camera;
+	bool _reset_on_export = false;
 #ifndef NDEBUG
 	bool m_bShow_Debug = true;
 	bool m_bShow_ImGuiDemo = false;

@@ -15,13 +15,13 @@ public:
 
 	void render(const glm::mat4& view_mat, const glm::mat4& proj_mat);
 	void update();
+	void reset_pos_and_vel();
 	void ImGui();
 	
 	void onMouseButtonEvent(int button, int action, int mods);
 	inline void onMouseMoveEvent(double xPos, double yPos) {}
 
 private:
-	void reset_pos_and_vel();
 	void on_nb_vertices_change();
 
 	inline int nb_of_vertices() { return _grid_width * _grid_height; }

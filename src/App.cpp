@@ -37,11 +37,14 @@ void App::render() {
 
 void App::ImGuiWindows() {
 	// Exporter
-	_exporter.ImGui_window_export_image_sequence();
+	if (_exporter.ImGui_window_export_image_sequence() && _reset_on_export) {
+		m_particle_system.reset_pos_and_vel();
+	}
 	if (!RenderState::IsExporting()) {
 		_exporter.ImGui_window_export_image([this]() {render(); }, m_renderer.renderBuffer());
 		// Particle System
 		ImGui::Begin("Particle System");
+		ImGui::Checkbox("Reset on export", &_reset_on_export);
 		m_particle_system.ImGui();
 		ImGui::End();
 		// Debug
@@ -91,6 +94,10 @@ void App::onKeyboardEvent(int key, int scancode, int action, int mods) {
 				ParamsHistory::Get().move_backward();
 			if (Input::MatchesChar("y", key))
 				ParamsHistory::Get().move_forward();
+			if (Input::MatchesChar("e", key))
+				_exporter.open_window_export_image_sequence();
+			if (Input::MatchesChar("s", key))
+				_exporter.open_window_export_image();
 		}
 	}
 }
