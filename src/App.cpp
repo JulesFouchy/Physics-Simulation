@@ -36,36 +36,38 @@ void App::render() {
 }
 
 void App::ImGuiWindows() {
-	// Particle System
-	ImGui::Begin("Particle System");
-	m_particle_system.ImGui();
-	ImGui::End();
 	// Exporter
-	_exporter.ImGui_window_export_image([this]() {render(); }, m_renderer.renderBuffer());
 	_exporter.ImGui_window_export_image_sequence();
-	// Debug
-#ifndef NDEBUG
-	if (m_bShow_Debug) {
-		ImGui::Begin("Debug", &m_bShow_Debug);
-		ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
-		ImGui::SameLine();
-		bool capFramerate = m_mainWindow.isVSyncEnabled();
-		if (ImGui::Checkbox("Cap framerate", &capFramerate)) {
-			if (capFramerate)
-				m_mainWindow.enableVSync();
-			else
-				m_mainWindow.disableVSync();
-		}
-		ImGui::Text("Rendering Size : %d %d", RenderState::Size().width(), RenderState::Size().height());
-		ImGui::Text("Mouse Position in Render Area : %.0f %.0f screen coordinates", Input::MouseInScreenCoordinates().x, Input::MouseInScreenCoordinates().y);
-		ImGui::Text("Mouse Position Normalized : %.2f %.2f", Input::MouseInNormalizedRatioSpace().x, Input::MouseInNormalizedRatioSpace().y);
-		ImGui::ColorEdit3("Background Color", glm::value_ptr(m_bgColor));
-		ImGui::Checkbox("Show Demo Window", &m_bShow_ImGuiDemo);
+	if (!RenderState::IsExporting()) {
+		_exporter.ImGui_window_export_image([this]() {render(); }, m_renderer.renderBuffer());
+		// Particle System
+		ImGui::Begin("Particle System");
+		m_particle_system.ImGui();
 		ImGui::End();
-	}
-	if (m_bShow_ImGuiDemo) // Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-		ImGui::ShowDemoWindow(&m_bShow_ImGuiDemo);
+		// Debug
+#ifndef NDEBUG
+		if (m_bShow_Debug) {
+			ImGui::Begin("Debug", &m_bShow_Debug);
+			ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
+			ImGui::SameLine();
+			bool capFramerate = m_mainWindow.isVSyncEnabled();
+			if (ImGui::Checkbox("Cap framerate", &capFramerate)) {
+				if (capFramerate)
+					m_mainWindow.enableVSync();
+				else
+					m_mainWindow.disableVSync();
+			}
+			ImGui::Text("Rendering Size : %d %d", RenderState::Size().width(), RenderState::Size().height());
+			ImGui::Text("Mouse Position in Render Area : %.0f %.0f screen coordinates", Input::MouseInScreenCoordinates().x, Input::MouseInScreenCoordinates().y);
+			ImGui::Text("Mouse Position Normalized : %.2f %.2f", Input::MouseInNormalizedRatioSpace().x, Input::MouseInNormalizedRatioSpace().y);
+			ImGui::ColorEdit3("Background Color", glm::value_ptr(m_bgColor));
+			ImGui::Checkbox("Show Demo Window", &m_bShow_ImGuiDemo);
+			ImGui::End();
+		}
+		if (m_bShow_ImGuiDemo) // Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+			ImGui::ShowDemoWindow(&m_bShow_ImGuiDemo);
 #endif
+	}
 }
 
 void App::ImGuiMenus() {
