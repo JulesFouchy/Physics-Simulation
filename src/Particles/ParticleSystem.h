@@ -32,8 +32,8 @@ private:
 	ColorParams _color_params;
 	WindParams _wind_params;
 
-	int _grid_width = 10;
-	int _grid_height = 10;
+	int _grid_width = 30;
+	int _grid_height = 30;
 	GLuint _vaoID;
 	GLuint _vboID;
 	GLuint _iboID;

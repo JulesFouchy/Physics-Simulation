@@ -46,11 +46,16 @@ void ParticleSystem::update() {
     _update_physics_cs->bind();
     _update_physics_cs->setUniform("_grid_width", _grid_width);
     _update_physics_cs->setUniform("_grid_height", _grid_height);
-    _update_physics_cs->setUniform("_dt", Time::deltaTime());    
+    _update_physics_cs->setUniform("_dt", Time::deltaTime());
+    _update_physics_cs->setUniform("_time", Time::time());
     _update_physics_cs->setUniform("_stiffness", *_physics_params->stiffness);
     _update_physics_cs->setUniform("_internal_damping", *_physics_params->internal_damping);
     _update_physics_cs->setUniform("_external_damping", *_physics_params->external_damping);
     _update_physics_cs->setUniform("_gravity", *_physics_params->gravity);
+    _update_physics_cs->setUniform("_wind_pulsation", *_wind_params->pulsation);
+    _update_physics_cs->setUniform("_wind_strength", *_wind_params->strength);
+    _update_physics_cs->setUniform("_wind_speed", *_wind_params->speed);
+    _update_physics_cs->setUniform("_wind_dir", glm::vec3(0, 0, 1));
 
     _update_physics_cs.compute(nb_of_vertices());
 }
