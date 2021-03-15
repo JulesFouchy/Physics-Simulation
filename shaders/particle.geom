@@ -1,5 +1,8 @@
 #version 430 core
 
+uniform mat4 _view_mat;
+uniform mat4 _proj_mat;
+
 layout(triangles) in;
 layout(triangle_strip, max_vertices=3) out;
 
@@ -13,7 +16,7 @@ void main()
 
     for( int i=0; i<gl_in.length( ); ++i )
     {
-        gl_Position = gl_in[i].gl_Position;
+        gl_Position = _proj_mat * _view_mat * gl_in[i].gl_Position;
         vNormal = N;
         //vTexCoords2 = vTexCoords;
         EmitVertex( );
