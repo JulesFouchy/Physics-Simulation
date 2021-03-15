@@ -14,7 +14,8 @@ struct Vertex {
 
 ParticleSystem::ParticleSystem()
       : _physics_params([this]() {on_nb_vertices_change(); }),
-      _color_params([this]() {})
+        _color_params([this]() {}),
+        _flag_texture(File::RootDir + "/textures/nono.jpg")
 {
     // Vertex array
     GLCall(glGenVertexArrays(1, &_vaoID));
@@ -68,6 +69,8 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
     _rendering_shader.bind();
     _rendering_shader.setUniform("_view_mat", view_mat);
     _rendering_shader.setUniform("_proj_mat", proj_mat);
+    _rendering_shader.setUniform("_texture", 0);
+    _flag_texture.attachToSlot(0);
     GLCall(glBindVertexArray(_vaoID));
     GLCall(glDrawElements(GL_TRIANGLES, nb_of_indices(), GL_UNSIGNED_INT, 0));
 }

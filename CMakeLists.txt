@@ -25,6 +25,8 @@ set(COOL_MODULES
     ExportImage
     Exporter
     MultiThread
+    LoadImage
+    Icons
 )
 
 # Set the path where all the Cool modules are stored. It is required by all the Cool IncludeMe.cmake files

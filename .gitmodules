@@ -52,3 +52,9 @@
 [submodule "Cool/MultiThread"]
 	path = Cool/MultiThread
 	url = https://github.com/CoolLibs/MultiThread
+[submodule "Cool/LoadImage"]
+	path = Cool/LoadImage
+	url = https://github.com/CoolLibs/LoadImage
+[submodule "Cool/Icons"]
+	path = Cool/Icons
+	url = https://github.com/CoolLibs/Icons

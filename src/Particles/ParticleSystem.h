@@ -5,6 +5,7 @@
 #include "Params/WindParams.h"
 #include "PoulpeBody.h"
 #include <Cool/FileWatcher/FileWatcher.h>
+#include <Cool/OpenGL/Texture.h>
 
 using namespace Cool;
 
@@ -42,6 +43,7 @@ private:
 	ComputeShader<256> _reset_pos_and_vel_cs{ "shaders/reset_pos_and_vel.comp" };
 	ComputeShader<256> _update_physics_cs{ "shaders/update_physics.comp" };
 	SSBO<float> _vel_ssbo{ 1 };
+	Texture _flag_texture;
 
 private:
 	//Serialization
