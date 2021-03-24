@@ -38,8 +38,8 @@ layout (std140, binding = 1) buffer VelocitiesBuffer {
 };
 
 vec3 interact_with(int x_off, int y_off, float strength) {
-    float stiffness = strength * _stiffness / _dt / _dt / 3600.f * NumberOfComputationsX;
-    float internal_damping = strength * _internal_damping / _dt / 60.f * NumberOfComputationsX / 100.f;
+    float stiffness = strength * _stiffness / _dt / _dt / 3600.f;
+    float internal_damping = strength * _internal_damping / _dt / 60.f / 100.f;
 
     int gid1 = int(gl_GlobalInvocationID.x);
     int x1 = gid1 % _grid_width;

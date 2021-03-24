@@ -12,7 +12,7 @@ App::App(OpenGLWindow& mainWindow)
 {
 	Serialization::FromJSON(*this, (File::RootDir + "/last-session-cache.json").c_str());
 	// RenderState::SubscribeToSizeChanges([]() { Log::Info("The size of the rendering area has changed. Look, you can subscribe to this event !"); });
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Please note that the blending is WRONG for the alpha channel (but it doesn't matter in most cases) The correct call would be glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE) a.k.a. newAlpha = srcAlpha + dstAlpha - srcAlpha*dstAlpha
 }

@@ -33,8 +33,8 @@ private:
 	ColorParams _color_params;
 	WindParams _wind_params;
 
-	int _grid_width = 30;
-	int _grid_height = 30;
+	int _grid_width = 100;
+	int _grid_height = 100;
 	GLuint _vaoID;
 	GLuint _vboID;
 	GLuint _iboID;
@@ -53,7 +53,8 @@ private:
 	{
 		archive(
 			cereal::make_nvp("Physics", _physics_params),
-			cereal::make_nvp("Color", _color_params)
+			cereal::make_nvp("Color", _color_params),
+			cereal::make_nvp("Wind", _wind_params)
 		);
 	}
 	template<class Archive>
@@ -61,7 +62,8 @@ private:
 	{
 		archive(
 			cereal::make_nvp("Physics", _physics_params),
-			cereal::make_nvp("Color", _color_params)
+			cereal::make_nvp("Color", _color_params),
+			cereal::make_nvp("Wind", _wind_params)
 		);
 		on_nb_vertices_change();
 	}
