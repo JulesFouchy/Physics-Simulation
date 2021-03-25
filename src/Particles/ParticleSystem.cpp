@@ -115,16 +115,18 @@ void ParticleSystem::reset_pos_and_vel() {
 void ParticleSystem::ImGui() {
     if (ImGui::Button("Reset"))
         reset_pos_and_vel();
-    ImGui::PushID(321);
-        _physics_params.ImGui();
-    ImGui::Separator();
-    ImGui::PopID();
-    ImGui::PushID(322);
-        _color_params.ImGui();
-    ImGui::PopID();
-    ImGui::PushID(322);
-        _wind_params.ImGui();
-    ImGui::PopID();
+}
+
+void ParticleSystem::ImGuiWindows() {
+    ImGui::Begin("Physics");
+    _physics_params.ImGui();
+    ImGui::End();
+    ImGui::Begin("Wind");
+    _wind_params.ImGui();
+    ImGui::End();
+    ImGui::Begin("Colors");
+    _color_params.ImGui();
+    ImGui::End();
 }
 
 void ParticleSystem::onMouseButtonEvent(int button, int action, int mods) {

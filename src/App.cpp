@@ -47,6 +47,7 @@ void App::ImGuiWindows() {
 		ImGui::Checkbox("Reset on export", &_reset_on_export);
 		m_particle_system.ImGui();
 		ImGui::End();
+		m_particle_system.ImGuiWindows();
 		// Debug
 #ifndef NDEBUG
 		if (m_bShow_Debug) {

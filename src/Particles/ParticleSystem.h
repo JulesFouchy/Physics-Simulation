@@ -18,6 +18,7 @@ public:
 	void update();
 	void reset_pos_and_vel();
 	void ImGui();
+	void ImGuiWindows();
 	
 	void onMouseButtonEvent(int button, int action, int mods);
 	inline void onMouseMoveEvent(double xPos, double yPos) {}
