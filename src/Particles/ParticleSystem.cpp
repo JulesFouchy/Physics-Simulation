@@ -56,7 +56,7 @@ void ParticleSystem::update() {
     _update_physics_cs->setUniform("_wind_pulsation", *_wind_params->pulsation);
     _update_physics_cs->setUniform("_wind_strength", *_wind_params->strength);
     _update_physics_cs->setUniform("_wind_speed", *_wind_params->speed);
-    _update_physics_cs->setUniform("_wind_dir", glm::vec3(0, 0, 1));
+    _update_physics_cs->setUniform("_wind_dir", *_wind_params->direction);
 
     _update_physics_cs.compute(nb_of_vertices());
 }
