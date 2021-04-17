@@ -29,12 +29,20 @@ struct Velocity {
     float _padding;
 };
 
-layout (std140, binding = 0) buffer VertexBuffer {
-   Vertex vertices[];
+layout (std140, binding = 0) buffer VertexBuffer0 {
+   Vertex verticesIN[];
 };
 
-layout (std140, binding = 1) buffer VelocitiesBuffer {
-   Velocity velocities[];
+layout (std140, binding = 1) buffer VertexBuffer1 {
+   Vertex verticesOUT[];
+};
+
+layout (std140, binding = 12) buffer VelocitiesBuffer0 {
+   Velocity velocitiesIN[];
+};
+
+layout (std140, binding = 13) buffer VelocitiesBuffer1 {
+   Velocity velocitiesOUT[];
 };
 
 vec3 interact_with(int x_off, int y_off, float strength) {
@@ -50,13 +58,15 @@ vec3 interact_with(int x_off, int y_off, float strength) {
     int gid2 = x2 + y2 * _grid_width;
 
     if (x2 >= 0 && x2 < _grid_width && y2 >= 0 && y2 < _grid_height) {
-        vec3 dir = vertices[gid1].pos.xyz - vertices[gid2].pos.xyz;
+        vec3 dir = verticesIN[gid1].pos.xyz - verticesIN[gid2].pos.xyz;
+        if (length(dir) == 0.)
+            return vec3(0.);
         vec3 ndir = normalize(dir);
         float rest_length = dist / (float(_grid_width) - 1.);
         float spring_strength = length(dir) - rest_length;
         return 
             - ndir * spring_strength * stiffness
-            - ndir * dot(ndir, (velocities[gid1].vel - velocities[gid2].vel)) * internal_damping
+            - ndir * dot(ndir, (velocitiesIN[gid1].vel - velocitiesIN[gid2].vel)) * internal_damping
         ;
     }
     else {
@@ -89,13 +99,13 @@ void cool_main(){
             interact_with(-1, -1, 0.5) +
             interact_with(+1, +1, 0.5) +
             interact_with(-1, +1, 0.5) +
-            (- velocities[gid].vel * external_damping) +
-            wind(vertices[gid].pos.xyz) +
+            (- velocitiesIN[gid].vel * external_damping) +
+            wind(verticesIN[gid].pos.xyz) +
             vec3(0., -_gravity, 0.);
 
         // Leapfrog update of vel and pos
-        velocities[gid].vel += acc * _dt;
-        vertices[gid].pos.xyz += velocities[gid].vel * _dt;
+        velocitiesOUT[gid].vel = velocitiesIN[gid].vel + acc;
+        verticesOUT[gid].pos.xyz = verticesIN[gid].pos.xyz + velocitiesOUT[gid].vel * _dt;
     }
 }
 

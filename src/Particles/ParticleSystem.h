@@ -34,16 +34,22 @@ private:
 	ColorParams _color_params;
 	WindParams _wind_params;
 
-	int _grid_width = 100;
-	int _grid_height = 100;
-	GLuint _vaoID;
-	GLuint _vboID;
-	GLuint _iboID;
+	bool _out_to_0 = true;
+	int _grid_width = 20;
+	int _grid_height = 20;
+	GLuint _vao0ID;
+	GLuint _vbo0ID;
+	GLuint _vao1ID;
+	GLuint _vbo1ID;
+	GLuint _ibo0ID;
+	GLuint _ibo1ID;
 	Shader _rendering_shader{ {{ShaderType::Vertex, "shaders/particle.vert"}, {ShaderType::Geometry, "shaders/particle.geom"} , {ShaderType::Fragment, "shaders/particle.frag"}} };
 	ComputeShader<256> _init_vertices_cs{ "shaders/init_vertices.comp" };
 	ComputeShader<256> _reset_pos_and_vel_cs{ "shaders/reset_pos_and_vel.comp" };
-	ComputeShader<256> _update_physics_cs{ "shaders/update_physics.comp" };
-	SSBO<float> _vel_ssbo{ 1 };
+	ComputeShader<256> _update_physics_cs0{ "shaders/update0.comp" };
+	ComputeShader<256> _update_physics_cs1{ "shaders/update1.comp" };
+	SSBO<float> _vel_ssbo0{ 12 };
+	SSBO<float> _vel_ssbo1{ 13 };
 	Texture _flag_texture;
 
 private:
