@@ -52,9 +52,11 @@ vec3 interact_with(int x_off, int y_off, float strength) {
     if (x2 >= 0 && x2 < _grid_width && y2 >= 0 && y2 < _grid_height) {
         vec3 dir = vertices[gid1].pos.xyz - vertices[gid2].pos.xyz;
         vec3 ndir = normalize(dir);
+        float rest_length = dist / (float(_grid_width) - 1.);
+        float spring_strength = length(dir) - rest_length;
         return 
-            - (dir - ndir / (float(_grid_width) - 1.) / dist) * stiffness
-            - (velocities[gid1].vel - velocities[gid2].vel) * internal_damping
+            - ndir * spring_strength * stiffness
+            - ndir * dot(ndir, (velocities[gid1].vel - velocities[gid2].vel)) * internal_damping
         ;
     }
     else {
