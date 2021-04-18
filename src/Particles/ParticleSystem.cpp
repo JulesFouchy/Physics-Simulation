@@ -43,12 +43,17 @@ ParticleSystem::~ParticleSystem() {
 }
 
 void ParticleSystem::update() {
+    static float rest_length = 0.714f;
+    ImGui::Begin("Yo");
+    ImGui::SliderFloat("Rest length", &rest_length, 0.f, 1.f);
+    ImGui::End();
     auto& cs_vel = _out_to_0 ? _update_physics_cs1 : _update_physics_cs0;
     cs_vel->bind();
     cs_vel->setUniform("_grid_width", _grid_width);
     cs_vel->setUniform("_grid_height", _grid_height);
     cs_vel->setUniform("_dt", Time::deltaTime());
     cs_vel->setUniform("_time", Time::time());
+    cs_vel->setUniform("_rest_length", rest_length);
     cs_vel->setUniform("_stiffness", *_physics_params->stiffness);
     cs_vel->setUniform("_internal_damping", *_physics_params->internal_damping);
     cs_vel->setUniform("_external_damping", *_physics_params->external_damping);
@@ -88,7 +93,7 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
     _rendering_shader.setUniform("_texture", 0);
     _flag_texture.attachToSlot(0);
     GLCall(glBindVertexArray(_vaoID));
-    GLCall(glDrawElements(GL_TRIANGLES, nb_of_indices(), GL_UNSIGNED_INT, 0));
+    GLCall(glDrawElements(GL_LINES, 1 * nb_of_indices(), GL_UNSIGNED_INT, 0));
     GLCall(glBindVertexArray(0));
     _out_to_0 = !_out_to_0;
 }

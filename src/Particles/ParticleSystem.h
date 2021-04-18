@@ -40,7 +40,7 @@ private:
 	GLuint _vaoID;
 	GLuint _vboID;
 	GLuint _iboID;
-	Shader _rendering_shader{ {{ShaderType::Vertex, "shaders/particle.vert"}, {ShaderType::Geometry, "shaders/particle.geom"} , {ShaderType::Fragment, "shaders/particle.frag"}} };
+	Shader _rendering_shader{ {{ShaderType::Vertex, "shaders/particle.vert"}, {ShaderType::Fragment, "shaders/particle.frag"}} };
 	ComputeShader<256> _init_vertices_cs{ "shaders/init_vertices.comp" };
 	ComputeShader<256> _reset_pos_and_vel_cs{ "shaders/reset_pos_and_vel.comp" };
 	ComputeShader<256> _update_physics_cs0{ "shaders/update_vel0.comp" };
