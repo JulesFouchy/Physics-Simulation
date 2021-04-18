@@ -33,15 +33,11 @@ layout (std140, binding = 0) buffer VertexBuffer0 {
    Vertex verticesIN[];
 };
 
-layout (std140, binding = 1) buffer VertexBuffer1 {
-   Vertex verticesOUT[];
-};
-
-layout (std140, binding = 12) buffer VelocitiesBuffer0 {
+layout (std140, binding = 13) buffer VelocitiesBuffer0 {
    Velocity velocitiesIN[];
 };
 
-layout (std140, binding = 13) buffer VelocitiesBuffer1 {
+layout (std140, binding = 12) buffer VelocitiesBuffer1 {
    Velocity velocitiesOUT[];
 };
 
@@ -104,8 +100,8 @@ void cool_main(){
             vec3(0., -_gravity, 0.);
 
         // Leapfrog update of vel and pos
-        velocitiesOUT[gid].vel = velocitiesIN[gid].vel + acc;
-        verticesOUT[gid].pos.xyz = verticesIN[gid].pos.xyz + velocitiesOUT[gid].vel * _dt;
+        velocitiesOUT[gid].vel = velocitiesIN[gid].vel + acc * _dt;
+        //verticesOUT[gid].pos.xyz = verticesIN[gid].pos.xyz + velocitiesOUT[gid].vel * _dt;
     }
 }
 

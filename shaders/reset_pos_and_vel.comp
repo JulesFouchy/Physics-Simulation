@@ -18,10 +18,6 @@ layout (std140, binding = 0) buffer VertexBuffer0 {
    Vertex vertices0[];
 };
 
-layout (std140, binding = 1) buffer VertexBuffer1 {
-   Vertex vertices1[];
-};
-
 layout (std140, binding = 12) buffer VelocitiesBuffer0 {
    Velocity velocities0[];
 };
@@ -41,7 +37,6 @@ void cool_main(){
         y / float(_grid_height - 1),
         1.
     );
-    vertices1[gid].pos = vertices0[gid].pos;
     // Vel
     velocities0[gid].vel = vec3(0.01, 0., 0.);
     velocities1[gid].vel = vec3(0.01, 0., 0.);

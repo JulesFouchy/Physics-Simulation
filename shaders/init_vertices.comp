@@ -13,10 +13,6 @@ layout (std140, binding = 0) buffer VertexBuffer0 {
    Vertex vertices0[];
 };
 
-layout (std140, binding = 1) buffer VertexBuffer1 {
-   Vertex vertices1[];
-};
-
 void cool_main(){
     int gid = int(gl_GlobalInvocationID.x);
     int x = gid / _grid_width;
@@ -25,5 +21,4 @@ void cool_main(){
         x / float(_grid_width - 1),
         y / float(_grid_height - 1)
     );
-    vertices1[gid].uv = vertices0[gid].uv;
 }
