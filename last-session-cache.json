@@ -1,0 +1,102 @@
+{
+    "App": {
+        "Background Color": {
+            "value0": 0.4779999852180481,
+            "value1": 0.6740000247955322,
+            "value2": 0.7919999957084656
+        },
+        "Particle System": {
+            "Physics": {
+                "value0": {
+                    "value0": {
+                        "Stiffness": 94.3550033569336
+                    },
+                    "value1": {
+                        "Internal Damping": 3.38700008392334
+                    },
+                    "value2": {
+                        "External Damping": 7.650000095367432
+                    },
+                    "value3": {
+                        "Gravity": 0.0
+                    },
+                    "value4": {
+                        "Size": 0.06499999761581421
+                    },
+                    "value5": {
+                        "Number of Particles": 16
+                    }
+                },
+                "value1": {
+                    "Current Preset uuid": 0
+                }
+            },
+            "Color": {
+                "value0": {
+                    "value0": {
+                        "Color Gradient Begin": {
+                            "value0": 1.0,
+                            "value1": 0.4264705777168274,
+                            "value2": 0.983131468296051
+                        }
+                    },
+                    "value1": {
+                        "Color Gradient End": {
+                            "value0": 0.7050509452819824,
+                            "value1": 0.2840253412723541,
+                            "value2": 0.9656862616539002
+                        }
+                    },
+                    "value2": {
+                        "Background": {
+                            "value0": 0.10757879912853241,
+                            "value1": 0.2647075355052948,
+                            "value2": 0.593137264251709
+                        }
+                    },
+                    "value3": {
+                        "Poulpe Body": {
+                            "value0": 1.0,
+                            "value1": 0.6372548937797546,
+                            "value2": 0.8186274766921997
+                        }
+                    },
+                    "value4": {
+                        "Poulpe Elements": {
+                            "value0": 1.0,
+                            "value1": 0.27941179275512698,
+                            "value2": 0.7032879590988159
+                        }
+                    }
+                },
+                "value1": {
+                    "Current Preset uuid": 1321899560
+                }
+            },
+            "Wind": {
+                "value0": {
+                    "value0": {
+                        "Pulsation": 0.5040000081062317
+                    },
+                    "value1": {
+                        "Strength": 3.427000045776367
+                    },
+                    "value2": {
+                        "Speed": 0.3569999933242798
+                    },
+                    "value3": {
+                        "value0": {
+                            "Direction": {
+                                "value0": -0.30288487672805788,
+                                "value1": -0.08550529181957245
+                            }
+                        }
+                    }
+                },
+                "value1": {
+                    "Current Preset uuid": 0
+                }
+            }
+        }
+    }
+}
