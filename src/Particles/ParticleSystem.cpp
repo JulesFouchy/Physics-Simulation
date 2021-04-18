@@ -51,7 +51,7 @@ void ParticleSystem::update() {
     cs_vel->bind();
     cs_vel->setUniform("_grid_width", _grid_width);
     cs_vel->setUniform("_grid_height", _grid_height);
-    cs_vel->setUniform("_dt", Time::deltaTime());
+    cs_vel->setUniform("_dt", std::min(Time::deltaTime(), 1.f / 60.f));
     cs_vel->setUniform("_time", Time::time());
     cs_vel->setUniform("_rest_length", rest_length);
     cs_vel->setUniform("_stiffness", *_physics_params->stiffness);
