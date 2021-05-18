@@ -93,12 +93,14 @@ void ParticleSystem::render(const glm::mat4& view_mat, const glm::mat4& proj_mat
     _rendering_shader.setUniform("_texture", 0);
     _flag_texture.attachToSlot(0);
     GLCall(glBindVertexArray(_vaoID));
-    GLCall(glDrawElements(GL_LINES, 1 * nb_of_indices(), GL_UNSIGNED_INT, 0));
+    GLCall(glDrawElements(GL_TRIANGLES, nb_of_indices(), GL_UNSIGNED_INT, 0));
     GLCall(glBindVertexArray(0));
     _out_to_0 = !_out_to_0;
 }
 
 void ParticleSystem::on_nb_vertices_change() {
+    _grid_width = *_physics_params->nb_particles;
+    _grid_height = *_physics_params->nb_particles;
     // Vertex buffer
     GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * nb_of_vertices(), nullptr, GL_STATIC_DRAW));
     _init_vertices_cs->bind();

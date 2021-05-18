@@ -12,19 +12,19 @@
                         "Stiffness": 94.3550033569336
                     },
                     "value1": {
-                        "Internal Damping": 3.38700008392334
+                        "Internal Damping": 2.390000104904175
                     },
                     "value2": {
                         "External Damping": 7.650000095367432
                     },
                     "value3": {
-                        "Gravity": 0.0
+                        "Gravity": 0.7549999952316284
                     },
                     "value4": {
                         "Size": 0.06499999761581421
                     },
                     "value5": {
-                        "Number of Particles": 16
+                        "Number of Particles": 20
                     }
                 },
                 "value1": {

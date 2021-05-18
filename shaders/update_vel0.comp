@@ -92,10 +92,10 @@ void cool_main(){
             interact_with(-1,  0, 1.) +
             interact_with( 0, +1, 1.) +
             interact_with( 0, -1, 1.) +
-            interact_with(+1, -1, 0.5) +
-            interact_with(-1, -1, 0.5) +
-            interact_with(+1, +1, 0.5) +
-            interact_with(-1, +1, 0.5) +
+            interact_with(+1, -1, 1.) +
+            interact_with(-1, -1, 1.) +
+            interact_with(+1, +1, 1.) +
+            interact_with(-1, +1, 1.) +
             (- velocitiesIN[gid].vel * external_damping) +
             wind(verticesIN[gid].pos.xyz) +
             vec3(0., -_gravity, 0.);
